@@ -2,22 +2,23 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-sign-up',
-  templateUrl: './sign-up.component.html',
-  styleUrls: ['./sign-up.component.scss']
+  selector: 'app-log-in',
+  templateUrl: './log-in.component.html',
+  styleUrls: ['./log-in.component.scss']
 })
-export class SignUpComponent implements OnInit {
-  signUpForm = new FormGroup(
+export class LogInComponent implements OnInit {
+
+  logInForm = new FormGroup(
     {
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.minLength(8)])
     }
   )
   get email(){
-    return this.signUpForm.get('email')
+    return this.logInForm.get('email')
   }
   get password() {
-    return this.signUpForm.get('password')
+    return this.logInForm.get('password')
   }
 
   constructor() { }
@@ -27,7 +28,6 @@ export class SignUpComponent implements OnInit {
   }
 
   onSubmit(){
-    console.log(this.signUpForm)
+    console.log(this.logInForm)
   }
-
 }

@@ -1,6 +1,8 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4" >
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
   <div class="container">
-        <span class="navbar-brand fa fa-shopping-bag" style="font-size: 25px;"><h4 class="d-inline p-4">Twoje Buty</h4></span> 
+    <span class="navbar-brand fa fa-shopping-bag" style="font-size: 25px;">
+      <h4 class="d-inline p-4">Twoje Buty</h4>
+    </span>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
       aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -14,25 +16,26 @@
           <a class="nav-link" href="#">Oferta</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Koszyk</a>
-          </li>
+          <a class="nav-link" href="#">Koszyk</a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Kontakt</a>
         </li>
       </ul>
+      <ul class="nav navbar-nav ml-auto">
+        <li class="nav-item dropdown ">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Twoje konto
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" routerLink="log-in">Zaloguj</a>
+            <a class="dropdown-item" routerLink="sign-up">Zarejestruj</a>
+            <a class="dropdown-item" href="#">Wyloguj</a>
+          </div>
+        </li>
+      </ul>
     </div>
-    <ul class="nav navbar-nav ml-auto">
-      <li class="nav-item dropdown ">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          Twoje konto
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">Zaloguj</a>
-          <a class="dropdown-item" routerLink="/sign-up">Zarejestruj</a>
-          <a class="dropdown-item" href="#">Wyloguj</a>
-        </div>
-      </li>
-    </ul>
+
   </div>
 </nav>
