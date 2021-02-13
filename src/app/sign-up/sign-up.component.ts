@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthServiceService } from '../shared/services/auth-service.service';
+ 
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
@@ -19,15 +22,26 @@ export class SignUpComponent implements OnInit {
   get password() {
     return this.signUpForm.get('password')
   }
+  get emailValue(){
+    return this.signUpForm.get('email')?.value
+  }
+  get passwordValue() {
+    return this.signUpForm.get('password')?.value
+  }
 
-  constructor() { }
+  constructor(private autService: AuthServiceService,private router: Router) { }
 
   ngOnInit(): void {
 
   }
+ 
 
   onSubmit(){
-    console.log(this.signUpForm)
+    this.autService.signUp(this.emailValue, this.passwordValue)
+    .subscribe(
+      ()=> this.router.navigate(['/log-in']),
+      err=>console.log(err)
+    )
   }
 
 }
