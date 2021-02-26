@@ -58,4 +58,9 @@ export class OfferComponent implements OnInit, OnDestroy {
     this.offerSubscription.unsubscribe()
   }
 
+  addToCart(event:any){
+    const elementId:number = event.target.dataset.index;
+    console.log(this.itemsArray[elementId].id)
+     }
+
 }

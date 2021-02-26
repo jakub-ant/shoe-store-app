@@ -15,10 +15,7 @@
         <li class="nav-item" routerLinkActive="active">
           <a class="nav-link" routerLink="offer">Oferta</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Koszyk</a>
-        </li>
-        <li class="nav-item">
+         <li class="nav-item">
           <a class="nav-link" href="#">Kontakt</a>
         </li>
       </ul>
@@ -26,12 +23,13 @@
         <li class="nav-item dropdown ">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
-            Twoje konto
+            {{loggedInUser?loggedInUser.email:'Twoje Konto'}}
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" routerLink="log-in">Zaloguj</a>
-            <a class="dropdown-item" routerLink="sign-up">Zarejestruj</a>
-            <a class="dropdown-item" href="#">Wyloguj</a>
+            <a class="dropdown-item"  *ngIf="!loggedInUser" routerLink="log-in">Zaloguj</a>
+            <a class="dropdown-item" *ngIf="!loggedInUser" routerLink="sign-up">Zarejestruj</a>
+            <a class="dropdown-item" *ngIf="loggedInUser" routerLink="sign-up">Koszyk</a>
+            <a class="dropdown-item" *ngIf="loggedInUser">Wyloguj</a>
           </div>
         </li>
       </ul>

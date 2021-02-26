@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { AuthServiceService } from '../shared/services/auth-service.service';
  
 @Component({
@@ -9,7 +9,9 @@ import { AuthServiceService } from '../shared/services/auth-service.service';
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.scss']
 })
-export class SignUpComponent implements OnInit {
+export class SignUpComponent implements OnInit, OnDestroy {
+  isLoading:boolean=false;
+  signupSub!:Subscription
   signUpForm = new FormGroup(
     {
       email: new FormControl('', [Validators.required, Validators.email]),
@@ -37,11 +39,18 @@ export class SignUpComponent implements OnInit {
  
 
   onSubmit(){
-    this.autService.signUp(this.emailValue, this.passwordValue)
+    this.isLoading=true
+    this.signupSub = this.autService.signUp(this.emailValue, this.passwordValue)
     .subscribe(
-      ()=> this.router.navigate(['/log-in']),
+      ()=> {
+        this.isLoading=false
+        this.router.navigate(['/log-in'])},
       err=>console.log(err)
     )
+  }
+
+  ngOnDestroy(){
+    if(this.signupSub) this.signupSub.unsubscribe()
   }
 
 }

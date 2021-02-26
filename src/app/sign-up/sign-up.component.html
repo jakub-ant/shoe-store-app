@@ -3,8 +3,11 @@
     Zarejestruj się
   </h2>
   <hr>
+  <app-spinner *ngIf="isLoading"></app-spinner>
 </div>
-<form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+
+<form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+ 
   <div class="container">
     <div class="form-group">
       <label for="signup-email">Email</label>

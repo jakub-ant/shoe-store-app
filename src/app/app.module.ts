@@ -10,6 +10,7 @@ import { LogInComponent } from './log-in/log-in.component';
 import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
 import { OfferComponent } from './offer/offer.component';
+import { SpinnerComponent } from './shared/spinner/spinner.component';;
 import { HttpClientModule } from '@angular/common/http';
 
 
@@ -21,7 +22,8 @@ import { HttpClientModule } from '@angular/common/http';
     LogInComponent,
     FooterComponent,
     HomeComponent,
-    OfferComponent
+    OfferComponent,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,
