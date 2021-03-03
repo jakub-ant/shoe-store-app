@@ -11,6 +11,7 @@ import { AuthServiceService } from '../shared/services/auth-service.service';
 })
 export class SignUpComponent implements OnInit, OnDestroy {
   isLoading:boolean=false;
+  errMessage!:string|null
   signupSub!:Subscription
   signUpForm = new FormGroup(
     {
@@ -45,7 +46,11 @@ export class SignUpComponent implements OnInit, OnDestroy {
       ()=> {
         this.isLoading=false
         this.router.navigate(['/log-in'])},
-      err=>console.log(err)
+      err=>{
+        this.errMessage=err.error.error.message;
+        this.signUpForm.reset()
+        this.isLoading = false
+      }
     )
   }
 

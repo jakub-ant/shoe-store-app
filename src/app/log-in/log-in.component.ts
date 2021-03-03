@@ -12,6 +12,7 @@ import { AuthServiceService } from '../shared/services/auth-service.service';
 export class LogInComponent implements OnInit, OnDestroy {
   isLoading:boolean = false;
   loginSub!: Subscription;
+  errMessage!:string|null
 
   logInForm = new FormGroup(
     {
@@ -43,8 +44,12 @@ export class LogInComponent implements OnInit, OnDestroy {
     this.loginSub= this.authServiceService.signIn(this.emailValue, this.passwordValue)
     .subscribe(()=>{
       this.isLoading = false
-      this.router.navigate(['/offer'])
-    })
+      this.router.navigate(['/offer']);
+      this.isLoading = false
+    },
+    err=>{this.errMessage=err.error.error.message;
+      this.logInForm.reset()
+    this.isLoading = false})
   }
   ngOnDestroy(){
    if(this.loginSub)  this.loginSub.unsubscribe()

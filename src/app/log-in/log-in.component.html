@@ -2,6 +2,9 @@
   <h2>
     Zaloguj się
   </h2>
+  <div class="alert alert-danger" role="alert" *ngIf="!(password?.touched||email?.touched)&&errMessage">
+    {{errMessage}}
+  </div>
   <hr>
   <app-spinner *ngIf="isLoading"></app-spinner>
 </div>
@@ -23,6 +26,6 @@
         Twoje hasło musi mieć co najmniej 8 liter.
       </small>
     </div>
-    <button type="submit" class="btn btn-primary">Zaloguj</button>
+    <button type="submit" class="btn btn-primary" [disabled]="logInForm.invalid">Zaloguj</button>
   </div>
 </form>
