@@ -29,7 +29,7 @@
             <a class="dropdown-item"  *ngIf="!loggedInUser" routerLink="log-in">Zaloguj</a>
             <a class="dropdown-item" *ngIf="!loggedInUser" routerLink="sign-up">Zarejestruj</a>
             <a class="dropdown-item" *ngIf="loggedInUser" routerLink="sign-up">Koszyk</a>
-            <a class="dropdown-item" *ngIf="loggedInUser">Wyloguj</a>
+            <a class="dropdown-item" *ngIf="loggedInUser" (click)="logOut()">Wyloguj</a>
           </div>
         </li>
       </ul>

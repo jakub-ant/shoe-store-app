@@ -31,4 +31,8 @@ export class AuthServiceService {
   handleError(errorRes:HttpErrorResponse){
    return throwError(errorRes)
   }
+
+  logOut(){
+    this.loggedInUser.next(null)
+  }
 }
