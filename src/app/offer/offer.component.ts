@@ -9,6 +9,7 @@ import {
   DbServiceService
 } from '../shared/services/db-service.service';
 import { User } from '../shared/user.model';
+import { OfferService } from './offer.service';
 
 interface Item {
   "id": string,
@@ -34,7 +35,7 @@ export class OfferComponent implements OnInit, OnDestroy {
   authSubscription!:Subscription
   
 
-  constructor(private dbService: DbServiceService, private authService: AuthServiceService) {
+  constructor(private dbService: DbServiceService, private authService: AuthServiceService, private offerService:OfferService) {
   }
 
   renderOffers() {
@@ -49,13 +50,15 @@ export class OfferComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.authSubscription = this.authService.loggedInUser.subscribe(user=>{ this.loggedInUser=user; if(this.loggedInUser) this.loggedInUser.shoppingCart=[]})
-    this.offerSubscription = this.dbService.getItems()
-      .subscribe(items => {
-        this.items = items
-        this.renderOffers()
-      },
-      err=>console.log(err)
-      )
+    // this.offerSubscription = this.dbService.getItems()
+    //   .subscribe(items => {
+    //     this.items = items
+    //     this.renderOffers()
+    //   },
+    //   err=>console.log(err)
+    //   )
+
+    this.offerSubscription = this.offerService.items.subscribe(items=>{this.items=items; this.renderOffers()}, err=>console.log(err))
 
   }
 
@@ -72,7 +75,7 @@ export class OfferComponent implements OnInit, OnDestroy {
     if(!this.loggedInUser) return;
     this.loggedInUser.shoppingCart.push(productId)
     this.dbService.addToCart(this.loggedInUser).subscribe(
-     ()=> this.dbService.showCart(this.loggedInUser.idToken).subscribe(res=>console.log(res)),
+     ()=> this.dbService.getCurrentCart(this.loggedInUser.idToken).subscribe(res=>console.log(res)),
      err=>console.log(err)
     )
     }
