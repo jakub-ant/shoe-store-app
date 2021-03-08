@@ -5,6 +5,16 @@
 img {
     width: 300px;
     height: 200px;
+    transition: 0.3s;
+}
+img:hover{
+    transform: scale(0.95);
+}
+.btn{
+    transition: 0.2s;
+}
+.btn:hover{
+    transform: scale(1.05);
 }
 .row{
     margin-bottom: 100px;
