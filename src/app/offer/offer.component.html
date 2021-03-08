@@ -14,7 +14,7 @@
                   <p>Rozmiar: {{item.desc.size}}</p>
                   <p>Płeć: {{item.desc.gender}}</p>
                   <p>Cena {{item.price}} PLN</p>
-                <a class="btn btn-primary" [attr.data-index]="i" (click)="addToCart($event)">Dodaj do koszyka</a>
+                <a class="btn btn-primary" [attr.data-id]="item.id" (click)="addToCart($event)">Dodaj do koszyka</a>
                 </div>
               </div>
         </div>

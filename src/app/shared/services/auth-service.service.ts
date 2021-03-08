@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
-import { Observable, Subject, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
 import { error } from 'protractor';
 
 
@@ -10,7 +10,7 @@ import { error } from 'protractor';
 })
 export class AuthServiceService {
   key:string='AIzaSyAEwYFImEhIdUWl-xrVal5Zng-ALnQaInc';
-  loggedInUser=new Subject<any|null>();
+  loggedInUser=new BehaviorSubject<any|null>(null);
    
 
 
@@ -35,4 +35,5 @@ export class AuthServiceService {
   logOut(){
     this.loggedInUser.next(null)
   }
+  
 }

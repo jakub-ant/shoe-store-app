@@ -3,9 +3,12 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { AuthServiceService } from '../shared/services/auth-service.service';
 import {
   DbServiceService
 } from '../shared/services/db-service.service';
+import { User } from '../shared/user.model';
 
 interface Item {
   "id": string,
@@ -26,10 +29,12 @@ interface Item {
 export class OfferComponent implements OnInit, OnDestroy {
   items: any
   itemsArray: Item[] = [];
-  offerSubscription: any;
+  offerSubscription!: Subscription;
+  loggedInUser!: User;
+  authSubscription!:Subscription
   
 
-  constructor(private dbService: DbServiceService) {
+  constructor(private dbService: DbServiceService, private authService: AuthServiceService) {
   }
 
   renderOffers() {
@@ -38,12 +43,12 @@ export class OfferComponent implements OnInit, OnDestroy {
         const element = this.items[key];
         element.id = key;
         this.itemsArray.push(element);
-        console.log(this.itemsArray)
       }
     }
   }
 
   ngOnInit(): void {
+    this.authSubscription = this.authService.loggedInUser.subscribe(user=>{ this.loggedInUser=user; if(this.loggedInUser) this.loggedInUser.shoppingCart=[]})
     this.offerSubscription = this.dbService.getItems()
       .subscribe(items => {
         this.items = items
@@ -55,12 +60,21 @@ export class OfferComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(){
-    this.offerSubscription.unsubscribe()
+    if(this.offerSubscription) this.offerSubscription.unsubscribe()
+    if(this.authSubscription)  this.authSubscription.unsubscribe()
+
   }
 
   addToCart(event:any){
-    const elementId:number = event.target.dataset.index;
-    console.log(this.itemsArray[elementId].id)
-     }
+        const productId:string = event.target.dataset.id;
+    console.log(productId)
+    console.log(this.loggedInUser)
+    if(!this.loggedInUser) return;
+    this.loggedInUser.shoppingCart.push(productId)
+    this.dbService.addToCart(this.loggedInUser).subscribe(
+     ()=> this.dbService.showCart(this.loggedInUser.idToken).subscribe(res=>console.log(res)),
+     err=>console.log(err)
+    )
+    }
 
 }
