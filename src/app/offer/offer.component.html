@@ -5,6 +5,7 @@
     </header>
 </div>
 <div class="container">
+    <div class="loader" *ngIf="isLoading">Loading...</div>
     <div class="row" mb-5>
         <div class=" col-m-3" *ngFor="let item of itemsArray; let i = index">
             <div class="card" style="width: 18rem;">

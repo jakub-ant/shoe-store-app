@@ -32,7 +32,8 @@ export class OfferComponent implements OnInit, OnDestroy {
   itemsArray: Item[] = [];
   offerSubscription!: Subscription;
   loggedInUser!: User;
-  authSubscription!:Subscription
+  authSubscription!:Subscription;
+  isLoading:boolean = false
   
 
   constructor(private dbService: DbServiceService, private authService: AuthServiceService, private offerService:OfferService) {
@@ -46,18 +47,12 @@ export class OfferComponent implements OnInit, OnDestroy {
         this.itemsArray.push(element);
       }
     }
+    this.isLoading=false
   }
 
   ngOnInit(): void {
+    this.isLoading = true
     this.authSubscription = this.authService.loggedInUser.subscribe(user=>{ this.loggedInUser=user; if(this.loggedInUser) this.loggedInUser.shoppingCart=[]})
-    // this.offerSubscription = this.dbService.getItems()
-    //   .subscribe(items => {
-    //     this.items = items
-    //     this.renderOffers()
-    //   },
-    //   err=>console.log(err)
-    //   )
-
     this.offerSubscription = this.offerService.items.subscribe(items=>{this.items=items; this.renderOffers()}, err=>console.log(err))
 
   }
@@ -69,10 +64,11 @@ export class OfferComponent implements OnInit, OnDestroy {
   }
 
   addToCart(event:any){
-        const productId:string = event.target.dataset.id;
+    const productId:string = event.target.dataset.id;
     console.log(productId)
     console.log(this.loggedInUser)
     if(!this.loggedInUser) return;
+    this.loggedInUser.shoppingCart.length = 0;
     this.loggedInUser.shoppingCart.push(productId)
     this.dbService.addToCart(this.loggedInUser).subscribe(
      ()=> this.dbService.getCurrentCart(this.loggedInUser.idToken).subscribe(res=>console.log(res)),

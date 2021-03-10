@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthServiceService } from '../shared/services/auth-service.service';
+import { DbServiceService } from '../shared/services/db-service.service';
 
 @Component({
   selector: 'app-log-in',
@@ -33,7 +34,7 @@ export class LogInComponent implements OnInit, OnDestroy {
     return this.logInForm.get('password')?.value
   }
 
-  constructor(private authServiceService:AuthServiceService, private router:Router) { }
+  constructor(private authServiceService:AuthServiceService, private router:Router, private dbService:DbServiceService) { }
 
   ngOnInit(): void {
 
@@ -42,9 +43,10 @@ export class LogInComponent implements OnInit, OnDestroy {
   onSubmit(){
     this.isLoading=true
     this.loginSub= this.authServiceService.signIn(this.emailValue, this.passwordValue)
-    .subscribe(()=>{
+    .subscribe(user=>{
       this.isLoading = false
       this.router.navigate(['/offer']);
+      this.dbService.getCurrentCart(user.idToken).subscribe()
       this.isLoading = false
     },
     err=>{this.errMessage=err.error.error.message;

@@ -28,7 +28,7 @@
           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item"  *ngIf="!loggedInUser" routerLink="log-in">Zaloguj</a>
             <a class="dropdown-item" *ngIf="!loggedInUser" routerLink="sign-up">Zarejestruj</a>
-            <a class="dropdown-item" *ngIf="loggedInUser" routerLink="sign-up">Koszyk</a>
+            <a class="dropdown-item" *ngIf="loggedInUser" routerLink="shopping-cart">Koszyk ({{shoppingCartLength}})</a>
             <a class="dropdown-item" *ngIf="loggedInUser" (click)="logOut()">Wyloguj</a>
           </div>
         </li>

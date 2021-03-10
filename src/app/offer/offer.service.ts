@@ -2,9 +2,12 @@ import {
   Injectable
 } from "@angular/core";
 import {
-  BehaviorSubject, Subscription
+  BehaviorSubject,
+  Subscription
 } from "rxjs";
-import { DbServiceService } from "../shared/services/db-service.service";
+import {
+  DbServiceService
+} from "../shared/services/db-service.service";
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +15,8 @@ import { DbServiceService } from "../shared/services/db-service.service";
 export class OfferService {
   items = new BehaviorSubject < any | null > (null);
   offerSubscription!: Subscription;
-     
-
   constructor(private dbService: DbServiceService) {
-this.fetchItems()
+    this.fetchItems()
   }
   fetchItems() {
     this.offerSubscription = this.dbService.getItems()

@@ -12,6 +12,7 @@ import { HomeComponent } from './home/home.component';
 import { OfferComponent } from './offer/offer.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';;
 import { HttpClientModule } from '@angular/common/http';
+import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { HttpClientModule } from '@angular/common/http';
     FooterComponent,
     HomeComponent,
     OfferComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    ShoppingCartComponent
   ],
   imports: [
     BrowserModule,

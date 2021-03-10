@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
-import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
-import { error } from 'protractor';
+import { BehaviorSubject, throwError } from 'rxjs';
+import { User } from '../user.model';
+import { ShoppingCartUserID } from '../shopping-cart-user-id.model';
 
 
 @Injectable({
@@ -11,6 +12,7 @@ import { error } from 'protractor';
 export class AuthServiceService {
   key:string='AIzaSyAEwYFImEhIdUWl-xrVal5Zng-ALnQaInc';
   loggedInUser=new BehaviorSubject<any|null>(null);
+  loggedInUsersShoppingCart=new BehaviorSubject<ShoppingCartUserID|null>(null)
    
 
 
@@ -23,7 +25,7 @@ export class AuthServiceService {
   }
 
   signIn(email: string, password: string) {
-    return this.httpClient.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${this.key}`,{
+    return this.httpClient.post <User>(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${this.key}`,{
       "email":email,"password":password,"returnSecureToken":true
     }).pipe(catchError(this.handleError), tap(user=>{this.loggedInUser.next(user)}))
   }

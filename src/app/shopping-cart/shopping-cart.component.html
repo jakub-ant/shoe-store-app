@@ -1,0 +1,15 @@
+<div class="container">
+    <header>
+        <h1>Twój Koszyk</h1>
+        <hr>
+    </header>
+
+    <ul class="list-group" *ngIf="shoppingCart">
+        <li *ngFor="let item of shoppingCart.shoppingCartItems" class="list-group-item"> <img [src]="item.imageURL" alt="image">  <span class="item-name">{{item.name}} <i class="fa fa-trash-o" 
+            [attr.data-cart-id]="item.cartItemId"
+            [attr.data-user-id]="shoppingCart.userId"
+            (click)="deleteItem($event)"
+            ></i></span> 
+        </li>
+      </ul>
+</div>
