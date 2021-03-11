@@ -3,13 +3,21 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { AuthServiceService } from '../shared/services/auth-service.service';
+import {
+  Subscription
+} from 'rxjs';
+import {
+  AuthServiceService
+} from '../shared/services/auth-service.service';
 import {
   DbServiceService
 } from '../shared/services/db-service.service';
-import { User } from '../shared/user.model';
-import { OfferService } from './offer.service';
+import {
+  User
+} from '../shared/user.model';
+import {
+  OfferService
+} from './offer.service';
 
 interface Item {
   "id": string,
@@ -31,13 +39,12 @@ export class OfferComponent implements OnInit, OnDestroy {
   items: any
   itemsArray: Item[] = [];
   offerSubscription!: Subscription;
-  loggedInUser!: User;
-  authSubscription!:Subscription;
-  isLoading:boolean = false
-  
+  loggedInUser!: User | null;
+  authSubscription!: Subscription;
+  isLoading: boolean = false
 
-  constructor(private dbService: DbServiceService, private authService: AuthServiceService, private offerService:OfferService) {
-  }
+
+  constructor(private dbService: DbServiceService, private authService: AuthServiceService, private offerService: OfferService) {}
 
   renderOffers() {
     for (const key in this.items) {
@@ -47,33 +54,45 @@ export class OfferComponent implements OnInit, OnDestroy {
         this.itemsArray.push(element);
       }
     }
-    this.isLoading=false
+    this.isLoading = false
   }
 
   ngOnInit(): void {
     this.isLoading = true
-    this.authSubscription = this.authService.loggedInUser.subscribe(user=>{ this.loggedInUser=user; if(this.loggedInUser) this.loggedInUser.shoppingCart=[]})
-    this.offerSubscription = this.offerService.items.subscribe(items=>{this.items=items; this.renderOffers()}, err=>console.log(err))
+    this.authSubscription = this.authService.loggedInUser.subscribe(user => {
+      if (user) {
+        this.loggedInUser = user;
+        this.loggedInUser.shoppingCart = []
+      }
+    })
+    this.offerSubscription = this.offerService.items.subscribe(items => {
+      this.items = items;
+      this.renderOffers()
+    }, err => console.log(err))
 
   }
 
-  ngOnDestroy(){
-    if(this.offerSubscription) this.offerSubscription.unsubscribe()
-    if(this.authSubscription)  this.authSubscription.unsubscribe()
+  ngOnDestroy() {
+    if (this.offerSubscription) this.offerSubscription.unsubscribe()
+    if (this.authSubscription) this.authSubscription.unsubscribe()
 
   }
 
-  addToCart(event:any){
-    const productId:string = event.target.dataset.id;
+  addToCart(event: any) {
+    const productId: string = event.target.dataset.id;
     console.log(productId)
     console.log(this.loggedInUser)
-    if(!this.loggedInUser) return;
+    if (!this.loggedInUser) return;
     this.loggedInUser.shoppingCart.length = 0;
     this.loggedInUser.shoppingCart.push(productId)
     this.dbService.addToCart(this.loggedInUser).subscribe(
-     ()=> this.dbService.getCurrentCart(this.loggedInUser.idToken).subscribe(res=>console.log(res)),
-     err=>console.log(err)
+      () => {
+        if (this.loggedInUser) {
+          this.dbService.getCurrentCart(this.loggedInUser.idToken).subscribe()
+        }
+      },
+      err => console.log(err)
     )
-    }
+  }
 
 }

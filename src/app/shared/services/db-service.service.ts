@@ -80,7 +80,6 @@ export class DbServiceService {
         shoppingCartUserID.shoppingCart.forEach((shoppingCartitem) => this.getItemById(shoppingCartitem.productID)
           .subscribe((item: any) => {
             const product = item;
-            console.log(product)
             product.cartItemId = shoppingCartitem.cartItemID
             shoppingCartUserID.shoppingCartItems.push(product)
           }, err => console.log(err)))

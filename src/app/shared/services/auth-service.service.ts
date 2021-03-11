@@ -11,7 +11,7 @@ import { ShoppingCartUserID } from '../shopping-cart-user-id.model';
 })
 export class AuthServiceService {
   key:string='AIzaSyAEwYFImEhIdUWl-xrVal5Zng-ALnQaInc';
-  loggedInUser=new BehaviorSubject<any|null>(null);
+  loggedInUser=new BehaviorSubject<User|null>(null);
   loggedInUsersShoppingCart=new BehaviorSubject<ShoppingCartUserID|null>(null)
    
 
@@ -27,7 +27,7 @@ export class AuthServiceService {
   signIn(email: string, password: string) {
     return this.httpClient.post <User>(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${this.key}`,{
       "email":email,"password":password,"returnSecureToken":true
-    }).pipe(catchError(this.handleError), tap(user=>{this.loggedInUser.next(user)}))
+    }).pipe(catchError(this.handleError), tap(user=>{this.loggedInUser.next(user); this.localStorageSaveUser(user)}))
   }
 
   handleError(errorRes:HttpErrorResponse){
@@ -35,7 +35,30 @@ export class AuthServiceService {
   }
 
   logOut(){
+    localStorage.clear()
     this.loggedInUser.next(null)
   }
-  
+  localStorageSaveUser(user:User){
+    localStorage.setItem('loggedUser', JSON.stringify(user))
+  }
+  localStorageSaveUserShoppingCart(shoppingCart:ShoppingCartUserID){
+    localStorage.removeItem('loggedUserShoppingCart')
+    localStorage.setItem('loggedUserShoppingCart', JSON.stringify(shoppingCart))
+  }
+  autoLogin(){
+    const loggedInUserString = localStorage.getItem('loggedUser');
+    if(!loggedInUserString) return;
+    const loggedInUser:User = JSON.parse(loggedInUserString)
+    this.loggedInUser.next(loggedInUser)
+  }
+  autoGetShoppingCart(){
+    const savedShoppingCartString=localStorage.getItem('loggedUserShoppingCart')
+    if(!savedShoppingCartString) return
+    const savedShoppingCart:ShoppingCartUserID = JSON.parse(savedShoppingCartString)
+    this.loggedInUsersShoppingCart.next(savedShoppingCart)
+  }
+  getDataFromLocalStorage(){
+    this.autoLogin();
+    this.autoGetShoppingCart()
+  }
 }

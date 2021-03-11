@@ -19,7 +19,7 @@ import {
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  loggedInUser!: User
+  loggedInUser!: User |null
   authSubscription!: Subscription;
   shoppingCartLength!: number
 

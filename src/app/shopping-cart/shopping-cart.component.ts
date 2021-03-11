@@ -1,7 +1,9 @@
 import {
   Component,
+  OnDestroy,
   OnInit
 } from '@angular/core';
+import { Subscription } from 'rxjs';
 import {
   AuthServiceService
 } from '../shared/services/auth-service.service';
@@ -14,7 +16,8 @@ import {
   templateUrl: './shopping-cart.component.html',
   styleUrls: ['./shopping-cart.component.scss']
 })
-export class ShoppingCartComponent implements OnInit {
+export class ShoppingCartComponent implements OnInit, OnDestroy {
+  shoppingCartSub!:Subscription
   shoppingCart!: any
   isLoading = false
 
@@ -22,8 +25,9 @@ export class ShoppingCartComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true
-    this.authService.loggedInUsersShoppingCart.subscribe(
+    this.shoppingCartSub= this.authService.loggedInUsersShoppingCart.subscribe(
       items => {
+        if(items) this.authService.localStorageSaveUserShoppingCart(items)
         this.shoppingCart = items;
         this.isLoading = false
       },
@@ -36,8 +40,10 @@ export class ShoppingCartComponent implements OnInit {
     const cartId: string = event.target.dataset.cartId;
     const userId: string = event.target.dataset.userId;
     this.dbService.deleteCartItem(cartId).subscribe(() => this.dbService.getCurrentCart(userId).subscribe(() => this.isLoading = false))
+  }
 
-
+  ngOnDestroy(){
+    this.shoppingCartSub.unsubscribe()
   }
 
 }
