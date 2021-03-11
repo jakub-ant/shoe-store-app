@@ -1,6 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthServiceService } from '../shared/services/auth-service.service';
-import { DbServiceService } from '../shared/services/db-service.service';
+import {
+  Component,
+  OnInit
+} from '@angular/core';
+import {
+  AuthServiceService
+} from '../shared/services/auth-service.service';
+import {
+  DbServiceService
+} from '../shared/services/db-service.service';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -8,22 +15,28 @@ import { DbServiceService } from '../shared/services/db-service.service';
   styleUrls: ['./shopping-cart.component.scss']
 })
 export class ShoppingCartComponent implements OnInit {
-  shoppingCart!:any
+  shoppingCart!: any
+  isLoading = false
 
-  constructor(private authService:AuthServiceService, private dbService:DbServiceService) { }
+  constructor(private authService: AuthServiceService, private dbService: DbServiceService) {}
 
   ngOnInit(): void {
+    this.isLoading = true
     this.authService.loggedInUsersShoppingCart.subscribe(
-      items=>this.shoppingCart=items,
-      err=>console.log(err)
+      items => {
+        this.shoppingCart = items;
+        this.isLoading = false
+      },
+      err => console.log(err)
     )
   }
 
-  deleteItem(event: any ){
-   const cartId:string = event.target.dataset.cartId;
-   const userId:string = event.target.dataset.userId;
-   this.dbService.deleteCartItem(cartId).subscribe(()=>this.dbService.getCurrentCart(userId).subscribe()) 
-   
+  deleteItem(event: any) {
+    this.isLoading = true
+    const cartId: string = event.target.dataset.cartId;
+    const userId: string = event.target.dataset.userId;
+    this.dbService.deleteCartItem(cartId).subscribe(() => this.dbService.getCurrentCart(userId).subscribe(() => this.isLoading = false))
+
 
   }
 
