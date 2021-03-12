@@ -3,7 +3,10 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
-import { Subscription } from 'rxjs';
+import {
+  Subscription
+} from 'rxjs';
+import { ErrorMsg } from '../shared/error-msg.model';
 import {
   AuthServiceService
 } from '../shared/services/auth-service.service';
@@ -17,21 +20,28 @@ import {
   styleUrls: ['./shopping-cart.component.scss']
 })
 export class ShoppingCartComponent implements OnInit, OnDestroy {
-  shoppingCartSub!:Subscription
-  shoppingCart!: any
-  isLoading = false
+  shoppingCartSub!: Subscription;
+  deleteCartItemSub!:Subscription;
+  getCurrentCartSub!:Subscription
+  shoppingCart!: any;
+  isLoading = false;
+  errorMsg: ErrorMsg = {
+    errorOccured: false,
+    errorMsg: 'Wystąpił błąd'
+  }
+
 
   constructor(private authService: AuthServiceService, private dbService: DbServiceService) {}
 
   ngOnInit(): void {
     this.isLoading = true
-    this.shoppingCartSub= this.authService.loggedInUsersShoppingCart.subscribe(
+    this.shoppingCartSub = this.authService.loggedInUsersShoppingCart.subscribe(
       items => {
-        if(items) this.authService.localStorageSaveUserShoppingCart(items)
+        this.errorMsg.errorOccured = false
         this.shoppingCart = items;
         this.isLoading = false
       },
-      err => console.log(err)
+      () => this.errorMsg.errorOccured = false
     )
   }
 
@@ -39,11 +49,23 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
     this.isLoading = true
     const cartId: string = event.target.dataset.cartId;
     const userId: string = event.target.dataset.userId;
-    this.dbService.deleteCartItem(cartId).subscribe(() => this.dbService.getCurrentCart(userId).subscribe(() => this.isLoading = false))
+
+    this.deleteCartItemSub= this.dbService.deleteCartItem(cartId)
+    .subscribe(() => {
+      return this.getCurrentCartSub= this.dbService.getCurrentCart(userId)
+        .subscribe(items => {
+          this.shoppingCart = items;
+          this.errorMsg.errorOccured = false;
+          this.isLoading = false;
+        },
+          () => this.errorMsg.errorOccured = true);
+    })
   }
 
-  ngOnDestroy(){
-    this.shoppingCartSub.unsubscribe()
+  ngOnDestroy() {
+  if(this.shoppingCartSub)  this.shoppingCartSub.unsubscribe()
+  if(this.deleteCartItemSub)  this.deleteCartItemSub.unsubscribe()
+  if(this.getCurrentCartSub) this.getCurrentCartSub.unsubscribe()
   }
 
 }

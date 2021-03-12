@@ -23,7 +23,7 @@ export class OfferService {
       .subscribe(items => {
           this.items.next(items)
         },
-        err => console.log(err)
+        err=>err
       )
   }
 

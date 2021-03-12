@@ -77,16 +77,22 @@ export class DbServiceService {
           shoppingCartUserID.shoppingCart.push(newItem)
           })
          })
-        shoppingCartUserID.shoppingCart.forEach((shoppingCartitem) => this.getItemById(shoppingCartitem.productID)
+        shoppingCartUserID.shoppingCart.forEach((shoppingCartItem) => this.getItemById(shoppingCartItem.productID)
           .subscribe((item: any) => {
             const product = item;
-            product.cartItemId = shoppingCartitem.cartItemID
+            product.cartItemId = shoppingCartItem.cartItemID
             shoppingCartUserID.shoppingCartItems.push(product)
           }, err => console.log(err)))
-        console.log(shoppingCartUserID)
         return shoppingCartUserID
       }
     ), tap(shoppingCart => this.authService.loggedInUsersShoppingCart.next(shoppingCart)))
 
+  }
+  autoLogin(){
+    const loggedInUserString = localStorage.getItem('loggedUser');
+    if(!loggedInUserString) return;
+    const loggedInUser:User = JSON.parse(loggedInUserString)
+    this.authService.loggedInUser.next(loggedInUser)
+    this.getCurrentCart(loggedInUser.idToken).subscribe()
   }
 }

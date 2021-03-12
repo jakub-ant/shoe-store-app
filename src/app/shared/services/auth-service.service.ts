@@ -41,24 +41,8 @@ export class AuthServiceService {
   localStorageSaveUser(user:User){
     localStorage.setItem('loggedUser', JSON.stringify(user))
   }
-  localStorageSaveUserShoppingCart(shoppingCart:ShoppingCartUserID){
-    localStorage.removeItem('loggedUserShoppingCart')
-    localStorage.setItem('loggedUserShoppingCart', JSON.stringify(shoppingCart))
-  }
-  autoLogin(){
-    const loggedInUserString = localStorage.getItem('loggedUser');
-    if(!loggedInUserString) return;
-    const loggedInUser:User = JSON.parse(loggedInUserString)
-    this.loggedInUser.next(loggedInUser)
-  }
-  autoGetShoppingCart(){
-    const savedShoppingCartString=localStorage.getItem('loggedUserShoppingCart')
-    if(!savedShoppingCartString) return
-    const savedShoppingCart:ShoppingCartUserID = JSON.parse(savedShoppingCartString)
-    this.loggedInUsersShoppingCart.next(savedShoppingCart)
-  }
-  getDataFromLocalStorage(){
-    this.autoLogin();
-    this.autoGetShoppingCart()
-  }
+
+
+ 
+ 
 }

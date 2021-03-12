@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthServiceService } from './shared/services/auth-service.service';
+import { DbServiceService } from './shared/services/db-service.service';
 
 @Component({
   selector: 'app-root',
@@ -9,9 +9,9 @@ import { AuthServiceService } from './shared/services/auth-service.service';
 export class AppComponent implements OnInit{
   title = 'shoe-store-app';
 
-  constructor(private authService:AuthServiceService){}
+  constructor(private dbService:DbServiceService){}
 
   ngOnInit(){
-    this.authService.getDataFromLocalStorage()
+    this.dbService.autoLogin()
   }
 }

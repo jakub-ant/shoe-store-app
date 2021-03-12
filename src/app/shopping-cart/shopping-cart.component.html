@@ -4,6 +4,9 @@
         <hr>
     </header>
     <app-spinner *ngIf="isLoading"></app-spinner>
+    <div *ngIf="errorMsg.errorOccured" class="alert alert-danger" role="alert">
+        {{errorMsg.errorMsg}}
+      </div>
 
     <ul class="list-group" *ngIf="shoppingCart&&!isLoading">
         <li *ngFor="let item of shoppingCart.shoppingCartItems" class="list-group-item"> <img [src]="item.imageURL" alt="image">  <span class="item-name">{{item.name}} <i class="fa fa-trash-o" 

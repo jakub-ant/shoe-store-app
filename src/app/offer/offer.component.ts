@@ -18,6 +18,7 @@ import {
 import {
   OfferService
 } from './offer.service';
+import{ErrorMsg} from '../shared/error-msg.model';
 
 interface Item {
   "id": string,
@@ -42,10 +43,20 @@ export class OfferComponent implements OnInit, OnDestroy {
   loggedInUser!: User | null;
   authSubscription!: Subscription;
   isLoading: boolean = false
+  errorMsg: ErrorMsg = {
+    errorOccured: false,
+    errorMsg: 'Wystąpił błąd'
+  }
+
 
 
   constructor(private dbService: DbServiceService, private authService: AuthServiceService, private offerService: OfferService) {}
-
+  showError() {
+    this.errorMsg.errorOccured = true
+  }
+  hideError() {
+    this.errorMsg.errorOccured = false
+  }
   renderOffers() {
     for (const key in this.items) {
       if (Object.prototype.hasOwnProperty.call(this.items, key)) {
@@ -60,22 +71,23 @@ export class OfferComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.isLoading = true
     this.authSubscription = this.authService.loggedInUser.subscribe(user => {
+      this.hideError()
       if (user) {
         this.loggedInUser = user;
         this.loggedInUser.shoppingCart = []
       }
-    })
+    }, () => this.showError())
     this.offerSubscription = this.offerService.items.subscribe(items => {
+      this.hideError()
       this.items = items;
       this.renderOffers()
-    }, err => console.log(err))
+    }, () => this.showError())
 
   }
 
   ngOnDestroy() {
     if (this.offerSubscription) this.offerSubscription.unsubscribe()
     if (this.authSubscription) this.authSubscription.unsubscribe()
-
   }
 
   addToCart(event: any) {
@@ -87,11 +99,12 @@ export class OfferComponent implements OnInit, OnDestroy {
     this.loggedInUser.shoppingCart.push(productId)
     this.dbService.addToCart(this.loggedInUser).subscribe(
       () => {
+        this.hideError()
         if (this.loggedInUser) {
           this.dbService.getCurrentCart(this.loggedInUser.idToken).subscribe()
         }
       },
-      err => console.log(err)
+      () => this.showError()
     )
   }
 

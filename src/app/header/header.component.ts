@@ -19,24 +19,31 @@ import {
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  loggedInUser!: User |null
+  loggedInUser!: User | null
   authSubscription!: Subscription;
-  shoppingCartLength!: number
+  loggedInUsersShoppingCartSub!: Subscription;
+  shoppingCartLength!: number;
 
   constructor(private authService: AuthServiceService) {}
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.loggedInUser.subscribe(user => this.loggedInUser = user);
-    this.authService.loggedInUsersShoppingCart.subscribe(res => {
-      if (res) {
-         this.shoppingCartLength = res.shoppingCart.length
-      } else {
-        this.shoppingCartLength = 0
-      }
-    })
+    this.authSubscription = this.authService.loggedInUser
+      .subscribe(user => {
+          this.loggedInUser = user
+        },
+        err=>console.log(err));
+    this.loggedInUsersShoppingCartSub = this.authService.loggedInUsersShoppingCart.subscribe(res => {
+        if (res) {
+          this.shoppingCartLength = res.shoppingCart.length
+        } else {
+          this.shoppingCartLength = 0
+        }
+      },
+      err=>console.log(err))
   }
   ngOnDestroy() {
     if (this.authSubscription) this.authSubscription.unsubscribe()
+    if (this.loggedInUsersShoppingCartSub) this.loggedInUsersShoppingCartSub.unsubscribe()
   }
 
   logOut() {

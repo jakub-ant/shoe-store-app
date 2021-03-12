@@ -5,6 +5,9 @@
     </header>
 </div>
 <div class="container">
+    <div *ngIf="errorMsg.errorOccured" class="alert alert-danger" role="alert">
+        {{errorMsg.errorMsg}}
+      </div>
     <div class="loader" *ngIf="isLoading">Loading...</div>
     <div class="row" mb-5>
         <div class=" col-m-3" *ngFor="let item of itemsArray; let i = index">
