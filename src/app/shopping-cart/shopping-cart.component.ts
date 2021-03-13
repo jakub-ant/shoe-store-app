@@ -10,6 +10,9 @@ import {
   ErrorMsg
 } from '../shared/error-msg.model';
 import {
+  Order
+} from '../shared/order.model';
+import {
   AuthServiceService
 } from '../shared/services/auth-service.service';
 import {
@@ -60,33 +63,62 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
         this.errorMsg.errorOccured = false
         this.shoppingCart = items;
         this.isLoading = false
-        console.log(this.shoppingCart)
       },
-      () => this.errorMsg.errorOccured = false
+      () => this.errorMsg.errorOccured = true
     )
   }
 
-  deleteItem(event: any) {
+  deleteItem(cartId:string, userId:string) {
     this.isLoading = true
-    const cartId: string = event.target.dataset.cartId;
-    const userId: string = event.target.dataset.userId;
-
     this.deleteCartItemSub = this.dbService.deleteCartItem(cartId)
       .subscribe(() => {
-        return this.getCurrentCartSub = this.dbService.getCurrentCart(userId)
+          this.getCurrentCartSub = this.dbService.getCurrentCart(userId)
           .subscribe(items => {
               this.shoppingCart = items;
               this.errorMsg.errorOccured = false;
               this.isLoading = false;
             },
-            () => this.errorMsg.errorOccured = true);
-      })
+            err => {this.errorMsg.errorOccured = true; console.log(err)});
+      }
+      , 
+      () => this.errorMsg.errorOccured = true)
+  }
+
+  onClickdeleteItem(event: any)
+  {
+    const cartId: string = event.target.dataset.cartId;
+    const userId: string = event.target.dataset.userId;
+    this.deleteItem(cartId, userId)
+
   }
 
   ngOnDestroy() {
     if (this.shoppingCartSub) this.shoppingCartSub.unsubscribe()
     if (this.deleteCartItemSub) this.deleteCartItemSub.unsubscribe()
     if (this.getCurrentCartSub) this.getCurrentCartSub.unsubscribe()
+  }
+
+  addNewOrder() {
+    if (this.shoppingCart) {
+      const currentDate = {
+        date: new Date()
+      }
+      const newOrder: Order = Object.assign(this.shoppingCart, currentDate)
+       this.dbService.addOrder(newOrder).subscribe(
+        ()=>{
+          if(this.shoppingCart) this.shoppingCart.shoppingCart.forEach(item=>{
+            if(item.cartItemID){
+              const cartItemID:string= item.cartItemID;
+              const userId = newOrder.userId;
+              this.deleteItem(cartItemID, userId);
+            }
+          })
+        }
+      )
+    } else {
+      return
+    }
+
   }
 
 }

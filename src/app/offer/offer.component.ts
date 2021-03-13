@@ -101,7 +101,7 @@ export class OfferComponent implements OnInit, OnDestroy {
       () => {
         this.hideError()
         if (this.loggedInUser) {
-          this.dbService.getCurrentCart(this.loggedInUser.idToken).subscribe()
+          this.dbService.getCurrentCart(this.loggedInUser.localId).subscribe()
         }
       },
       () => this.showError()

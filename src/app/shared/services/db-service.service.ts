@@ -4,10 +4,13 @@ import {
 import {
   Injectable
 } from '@angular/core';
+import { throwError } from 'rxjs';
 import {
+  catchError,
   map,
   tap
 } from 'rxjs/operators';
+import { Order } from '../order.model';
 import { ShoppingCartUserID } from '../shopping-cart-user-id.model';
 import {
   User
@@ -27,26 +30,34 @@ export class DbServiceService {
     return this.httpClient.get('https://shoe-store-d0b41-default-rtdb.firebaseio.com/shoes.json')
   }
 
-  getItemById(idToken: string) {
-    return this.httpClient.get(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/shoes/${idToken}.json`)
+  getItemById(id: string) {
+    return this.httpClient.get(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/shoes/${id}.json`)
 
   }
 
   addToCart(user: User) {
     return this.httpClient.post(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/shopping-carts.json`, {
-      userId: user.idToken,
+      userId: user.localId,
       userShoppingCart: user.shoppingCart
     })
   }
+
+  addOrder(order: Order) {
+    return this.httpClient.post(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/orders.json`, order)
+  }
+  
 
   deleteCartItem(cartId:string){
     return this.httpClient.delete(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/shopping-carts/${cartId}.json`)
   }
 
   getCurrentCart(userId: string) {
-    return this.httpClient.get(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/shopping-carts.json?"userId"=${userId}`).pipe(map(
-      res => {
+    return this.httpClient.get(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/shopping-carts.json?orderBy="userId"&equalTo="${userId}"`).pipe(catchError(err => {
+      return throwError(err);
+  }),map(
+      res => {     
         if(!res) return null
+         
         const shoppingCart = [];
         for (const [key, value] of Object.entries(res)) {
           const itemIdProductId = {
@@ -55,6 +66,7 @@ export class DbServiceService {
           }
           shoppingCart.push(itemIdProductId)
         }
+        if(!shoppingCart.length) return null
         const shoppingCartUserID = new ShoppingCartUserID(shoppingCart[0].productId.userId)
         shoppingCart.forEach(item => {
           return item.productId.userShoppingCart.forEach((res: string) => {
@@ -81,6 +93,6 @@ export class DbServiceService {
     if(!loggedInUserString) return;
     const loggedInUser:User = JSON.parse(loggedInUserString)
     this.authService.loggedInUser.next(loggedInUser)
-    this.getCurrentCart(loggedInUser.idToken).subscribe()
+    this.getCurrentCart(loggedInUser.localId).subscribe()
   }
 }

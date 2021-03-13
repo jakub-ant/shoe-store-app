@@ -1,5 +1,5 @@
 export class ShoppingCartUserID {
-    userId!: string | number;
+    userId!: string ;
     shoppingCart: {
       cartItemID: string | null,
       productID: string
@@ -12,7 +12,7 @@ imageURL: string
 name: string
 price: number
     }[] = [];
-    constructor(userId: string | number) {
+    constructor(userId: string ) {
       this.userId = userId
     }
   }
