@@ -3,13 +3,18 @@
         <h1>Twój Koszyk</h1>
         <hr>
     </header>
-    <app-spinner *ngIf="isLoading"></app-spinner>
     <div *ngIf="errorMsg.errorOccured" class="alert alert-danger" role="alert">
         {{errorMsg.errorMsg}}
       </div>
 
+      <div class="my-3">
+        <p style="font-size: 24px;">Wartość twojego zamówienia wynosi: {{totalValue}} PLN</p> <button type="button" class="btn btn-info" [disabled]="totalValue===0">Zamów!</button>
+    </div>
+    <app-spinner *ngIf="isLoading"></app-spinner>
+
     <ul class="list-group" *ngIf="shoppingCart&&!isLoading">
-        <li *ngFor="let item of shoppingCart.shoppingCartItems" class="list-group-item"> <img [src]="item.imageURL" alt="image">  <span class="item-name">{{item.name}} <i class="fa fa-trash-o" 
+        <li *ngFor="let item of shoppingCart.shoppingCartItems" class="list-group-item"> <img [src]="item.imageURL" alt="image">
+              <span class="item-name">{{item.name}} | Cena: {{item.price}} PLN<i class="fa fa-trash-o" 
             [attr.data-cart-id]="item.cartItemId"
             [attr.data-user-id]="shoppingCart.userId"
             (click)="deleteItem($event)"

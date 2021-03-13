@@ -4,7 +4,14 @@ export class ShoppingCartUserID {
       cartItemID: string | null,
       productID: string
     } [] = [];
-    shoppingCartItems: Object[] = [];
+    shoppingCartItems: {
+      availableItems: number
+cartItemId: string
+desc: {gender: string, size: number}
+imageURL: string
+name: string
+price: number
+    }[] = [];
     constructor(userId: string | number) {
       this.userId = userId
     }

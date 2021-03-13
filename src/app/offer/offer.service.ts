@@ -26,6 +26,4 @@ export class OfferService {
         err=>err
       )
   }
-
-
 }

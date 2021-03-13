@@ -6,13 +6,18 @@ import {
 import {
   Subscription
 } from 'rxjs';
-import { ErrorMsg } from '../shared/error-msg.model';
+import {
+  ErrorMsg
+} from '../shared/error-msg.model';
 import {
   AuthServiceService
 } from '../shared/services/auth-service.service';
 import {
   DbServiceService
 } from '../shared/services/db-service.service';
+import {
+  ShoppingCartUserID
+} from '../shared/shopping-cart-user-id.model';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -21,9 +26,9 @@ import {
 })
 export class ShoppingCartComponent implements OnInit, OnDestroy {
   shoppingCartSub!: Subscription;
-  deleteCartItemSub!:Subscription;
-  getCurrentCartSub!:Subscription
-  shoppingCart!: any;
+  deleteCartItemSub!: Subscription;
+  getCurrentCartSub!: Subscription
+  shoppingCart!: ShoppingCartUserID | null;
   isLoading = false;
   errorMsg: ErrorMsg = {
     errorOccured: false,
@@ -32,7 +37,22 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
 
 
   constructor(private authService: AuthServiceService, private dbService: DbServiceService) {}
+  get totalValue(): number {
+    if (this.shoppingCart && !this.isLoading) {
+      const reducer = (accumulator: number, currentValue: number) => accumulator + currentValue;
+      const prices: Array < number > = []
+      this.shoppingCart.shoppingCartItems.forEach(item => prices.push(item.price))
+      if (prices.length === 0) {
+        return 0
+      } else {
+        let totalPrice: number = prices.reduce(reducer)
+        return totalPrice
+      }
+    } else {
+      return 0
+    }
 
+  }
   ngOnInit(): void {
     this.isLoading = true
     this.shoppingCartSub = this.authService.loggedInUsersShoppingCart.subscribe(
@@ -40,6 +60,7 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
         this.errorMsg.errorOccured = false
         this.shoppingCart = items;
         this.isLoading = false
+        console.log(this.shoppingCart)
       },
       () => this.errorMsg.errorOccured = false
     )
@@ -50,22 +71,22 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
     const cartId: string = event.target.dataset.cartId;
     const userId: string = event.target.dataset.userId;
 
-    this.deleteCartItemSub= this.dbService.deleteCartItem(cartId)
-    .subscribe(() => {
-      return this.getCurrentCartSub= this.dbService.getCurrentCart(userId)
-        .subscribe(items => {
-          this.shoppingCart = items;
-          this.errorMsg.errorOccured = false;
-          this.isLoading = false;
-        },
-          () => this.errorMsg.errorOccured = true);
-    })
+    this.deleteCartItemSub = this.dbService.deleteCartItem(cartId)
+      .subscribe(() => {
+        return this.getCurrentCartSub = this.dbService.getCurrentCart(userId)
+          .subscribe(items => {
+              this.shoppingCart = items;
+              this.errorMsg.errorOccured = false;
+              this.isLoading = false;
+            },
+            () => this.errorMsg.errorOccured = true);
+      })
   }
 
   ngOnDestroy() {
-  if(this.shoppingCartSub)  this.shoppingCartSub.unsubscribe()
-  if(this.deleteCartItemSub)  this.deleteCartItemSub.unsubscribe()
-  if(this.getCurrentCartSub) this.getCurrentCartSub.unsubscribe()
+    if (this.shoppingCartSub) this.shoppingCartSub.unsubscribe()
+    if (this.deleteCartItemSub) this.deleteCartItemSub.unsubscribe()
+    if (this.getCurrentCartSub) this.getCurrentCartSub.unsubscribe()
   }
 
 }
