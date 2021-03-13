@@ -1,4 +1,24 @@
 $max-size:50px;
+@keyframes shake {
+  0%{
+    transform: translate(1px, 1px) rotate(1deg);
+  }
+  20%{
+    transform: translate(-1px, -1px) rotate(-1deg);
+  }
+  40%{
+    transform: translate(1px, 1px) rotate(1deg);
+  }
+  60%{
+    transform: translate(-1px, 1px) rotate(-1deg);
+  }
+  80%{
+    transform: translate(1px, 1px) rotate(1deg);
+  }
+  100%{
+    transform: translate(-1px,-1px) rotate(-1deg);
+  }
+}
 
 .list-group {
   margin-bottom: $max-size*2;
@@ -22,6 +42,7 @@ $max-size:50px;
 
         &:hover {
           transform: scale(1.1);
+          animation: shake 0.5s infinite;
           cursor: pointer;
         }
       }

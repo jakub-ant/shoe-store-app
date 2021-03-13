@@ -1,24 +1,28 @@
 <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light mb-4">
   <div class="container">
-    <span class="navbar-brand fa fa-shopping-bag" style="font-size: 25px;">
-      <h4 class="d-inline p-4">Twoje Buty</h4>
+    <div class="navbar-brand">
+          <span class=" fa fa-shopping-bag" style="font-size: 25px;">
     </span>
+    <h4 class="d-inline p-1">Twoje Buty</h4>
+    </div>
+
+
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
       aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav">
-        <li class="nav-item" routerLinkActive="active">
+        <li class="nav-item scale" routerLinkActive="active">
           <a class="nav-link" routerLink="home">Home </a>
         </li>
-        <li class="nav-item" routerLinkActive="active">
+        <li class="nav-item scale" routerLinkActive="active">
           <a class="nav-link" routerLink="offer">Oferta</a>
         </li>
 
       </ul>
       <ul class="nav navbar-nav ml-auto">
-        <li class="nav-item dropdown ">
+        <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
             {{loggedInUser?loggedInUser.email:'Twoje Konto'}}

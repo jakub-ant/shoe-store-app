@@ -1,0 +1,12 @@
+.fa-shopping-bag{
+    transition: 0.5s;
+    &:hover{
+        transform: rotate(360deg);
+    }
+}
+.nav-item.scale{
+    transition: 0.3s;
+    &:hover{
+        transform: scale(1.1);
+    }
+}
