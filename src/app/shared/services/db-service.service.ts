@@ -88,6 +88,11 @@ export class DbServiceService {
     ), tap(shoppingCart => this.authService.loggedInUsersShoppingCart.next(shoppingCart)))
 
   }
+
+  getOrders(userId: string) {
+    return this.httpClient.get(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/orders.json?orderBy="userId"&equalTo="${userId}"`)
+    .pipe(catchError(err => throwError(err)))}
+    
   autoLogin(){
     const loggedInUserString = localStorage.getItem('loggedUser');
     if(!loggedInUserString) return;
