@@ -5,7 +5,6 @@ export class ShoppingCartUserID {
     productID: string
   } [] = [];
   shoppingCartItems: {
-    availableItems: number
     cartItemId: string
     desc: {
       gender: string,
