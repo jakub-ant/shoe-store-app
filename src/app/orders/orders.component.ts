@@ -1,9 +1,26 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { ErrorMsg } from '../shared/error-msg.model';
-import { AuthServiceService } from '../shared/services/auth-service.service';
-import { DbServiceService } from '../shared/services/db-service.service';
-import { User } from '../shared/user.model';
+import {
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
+import {
+  Subscription
+} from 'rxjs';
+import {
+  ErrorMsg
+} from '../shared/error-msg.model';
+import {
+  Order
+} from '../shared/order.model';
+import {
+  AuthServiceService
+} from '../shared/services/auth-service.service';
+import {
+  DbServiceService
+} from '../shared/services/db-service.service';
+import {
+  User
+} from '../shared/user.model';
 
 @Component({
   selector: 'app-orders',
@@ -11,9 +28,9 @@ import { User } from '../shared/user.model';
   styleUrls: ['./orders.component.scss']
 })
 export class OrdersComponent implements OnInit, OnDestroy {
-  orders:any;
-  loggedInUser!:User|null;
-  loggedInUserSub!:Subscription
+  orders!: Array < Order > |null;
+  loggedInUser!: User | null;
+  loggedInUserSub!: Subscription
   isLoading = false;
   errorMsg: ErrorMsg = {
     errorOccured: false,
@@ -24,25 +41,29 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-   this.loggedInUserSub= this.authService.loggedInUser.subscribe(user=>{
-      this.errorMsg.errorOccured = false
-      this.loggedInUser=user;
-      if(this.loggedInUser){
-        this.dbService.getOrders(this.loggedInUser.localId).subscribe(
-          orders =>{
-            this.orders = orders; 
-            
-            console.log(orders)},
-          ()=> this.errorMsg.errorOccured=true
-        )
-      }
-    },
-      ()=> this.errorMsg.errorOccured=true);
+    this.loggedInUserSub = this.authService.loggedInUser.subscribe(user => {
+        this.errorMsg.errorOccured = false
+        this.loggedInUser = user;
+        if (this.loggedInUser) {
+          this.dbService.getOrders(this.loggedInUser.localId).subscribe(
+            orders => {
+              if (orders) {
+                this.orders = orders;
+                console.log(orders)
+              }else {
+                this.orders = orders
+              }
+            },
+            () => this.errorMsg.errorOccured = true
+          )
+        }
+      },
+      () => this.errorMsg.errorOccured = true);
 
-    
+
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.loggedInUserSub.unsubscribe()
   }
 

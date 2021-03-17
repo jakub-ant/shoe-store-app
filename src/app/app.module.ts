@@ -14,6 +14,8 @@ import { SpinnerComponent } from './shared/spinner/spinner.component';;
 import { HttpClientModule } from '@angular/common/http';
 import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
 import { OrdersComponent } from './orders/orders.component';
+import { orderTotalPipe } from './shared/order-total.pipe';
+import { OrderItemComponent } from './orders/order-item/order-item.component';
 
 
 @NgModule({
@@ -27,7 +29,9 @@ import { OrdersComponent } from './orders/orders.component';
     OfferComponent,
     SpinnerComponent,
     ShoppingCartComponent,
-    OrdersComponent
+    orderTotalPipe,
+    OrdersComponent,
+    OrderItemComponent
   ],
   imports: [
     BrowserModule,
