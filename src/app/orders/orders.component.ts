@@ -49,8 +49,8 @@ export class OrdersComponent implements OnInit, OnDestroy {
             orders => {
               if (orders) {
                 this.orders = orders;
-                console.log(orders)
-              }else {
+                this.orders.sort((a,b) => (a.date < b.date) ? 1 : ((b.date < a.date) ? -1 : 0))
+              } else {
                 this.orders = orders
               }
             },

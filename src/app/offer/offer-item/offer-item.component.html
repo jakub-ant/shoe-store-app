@@ -8,5 +8,9 @@
           <p>Cena {{item.price}} PLN</p>
         <a class="btn btn-primary" [attr.data-id]="item.id" (click)="addToCart($event)">Dodaj do koszyka</a>
         </div>
+        <div class="addedItem" 
+        [@showHideMessage]="showMessage ? 'show':'hide'"
+        ><p>Produkt został dodany do koszyka</p></div>
       </div>
+ 
 </div>
