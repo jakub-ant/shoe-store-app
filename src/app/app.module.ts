@@ -16,6 +16,7 @@ import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
 import { OrdersComponent } from './orders/orders.component';
 import { orderTotalPipe } from './shared/order-total.pipe';
 import { OrderItemComponent } from './orders/order-item/order-item.component';
+import { OfferItemComponent } from './offer/offer-item/offer-item.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { OrderItemComponent } from './orders/order-item/order-item.component';
     ShoppingCartComponent,
     orderTotalPipe,
     OrdersComponent,
-    OrderItemComponent
+    OrderItemComponent,
+    OfferItemComponent
   ],
   imports: [
     BrowserModule,

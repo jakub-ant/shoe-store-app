@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" >
     <header>
         <h1>Wybierz buty, kóre pasują do Ciebie!</h1>
         <hr>
@@ -10,7 +10,7 @@
       </div>
     <div class="loader" *ngIf="isLoading">Loading...</div>
     <div class="row" mb-5>
-        <div class=" col-m-3" *ngFor="let item of itemsArray; let i = index">
+        <!-- <div class=" col-m-3" *ngFor="let item of itemsArray">
             <div class="card" style="width: 18rem;">
                 <img class="card-img-top" [src]="item.imageURL" [alt]="item.name" style="width: 100%;">
                 <div class="card-body">
@@ -21,6 +21,9 @@
                 <a class="btn btn-primary" [attr.data-id]="item.id" (click)="addToCart($event)">Dodaj do koszyka</a>
                 </div>
               </div>
-        </div>
+        </div> -->
+        <app-offer-item *ngFor="let item of itemsArray" [item]="item" [loggedInUser]="loggedInUser" (showErrorMsg)="toggleError($event)">
+
+        </app-offer-item>
     </div>
 </div>

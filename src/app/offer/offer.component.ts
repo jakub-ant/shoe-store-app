@@ -19,18 +19,20 @@ import {
   OfferService
 } from './offer.service';
 import{ErrorMsg} from '../shared/error-msg.model';
+import { OfferItem } from '../shared/offer-item.model';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
-interface Item {
-  "id": string,
-  "name": string,
-  "desc": {
-    "gender": string,
-    "size": number
-  },
-  "price": number,
-  "availableItems": number,
-  "imageURL": string
-}
+// interface Item {
+//   "id": string,
+//   "name": string,
+//   "desc": {
+//     "gender": string,
+//     "size": number
+//   },
+//   "price": number,
+//   "availableItems": number,
+//   "imageURL": string
+// }
 @Component({
   selector: 'app-offer',
   templateUrl: './offer.component.html',
@@ -38,7 +40,7 @@ interface Item {
 })
 export class OfferComponent implements OnInit, OnDestroy {
   items: any
-  itemsArray: Item[] = [];
+  itemsArray: OfferItem[] = [];
   offerSubscription!: Subscription;
   loggedInUser!: User | null;
   authSubscription!: Subscription;
@@ -51,12 +53,20 @@ export class OfferComponent implements OnInit, OnDestroy {
 
 
   constructor(private dbService: DbServiceService, private authService: AuthServiceService, private offerService: OfferService) {}
+  toggleError(event:boolean){
+    if(event){
+      this.showError()
+    } else {
+      this.hideError()
+    }
+  }
   showError() {
     this.errorMsg.errorOccured = true
   }
   hideError() {
     this.errorMsg.errorOccured = false
   }
+  
   renderOffers() {
     for (const key in this.items) {
       if (Object.prototype.hasOwnProperty.call(this.items, key)) {
