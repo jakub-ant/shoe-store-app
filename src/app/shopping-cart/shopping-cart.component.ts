@@ -3,6 +3,7 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   Subscription
 } from 'rxjs';
@@ -39,7 +40,7 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
   }
 
 
-  constructor(private authService: AuthServiceService, private dbService: DbServiceService) {}
+  constructor(private authService: AuthServiceService, private dbService: DbServiceService, private router: Router) {}
   get totalValue(): number {
     if (this.shoppingCart && !this.isLoading) {
       const reducer = (accumulator: number, currentValue: number) => accumulator + currentValue;
@@ -113,7 +114,10 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
               this.deleteItem(cartItemID, userId);
             }
           })
-        }
+          this.errorMsg.errorOccured= false;
+          this.router.navigate(['orders'])
+        },
+        ()=>this.errorMsg.errorOccured = true
       )
     } else {
       return
