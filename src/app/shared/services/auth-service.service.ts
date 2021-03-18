@@ -4,13 +4,13 @@ import { catchError, tap } from 'rxjs/operators';
 import { BehaviorSubject, throwError } from 'rxjs';
 import { User } from '../user.model';
 import { ShoppingCartUserID } from '../shopping-cart-user-id.model';
+import {environment} from '../../../environments/environment'
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthServiceService {
-  key:string='AIzaSyAEwYFImEhIdUWl-xrVal5Zng-ALnQaInc';
   loggedInUser=new BehaviorSubject<User|null>(null);
   loggedInUsersShoppingCart=new BehaviorSubject<ShoppingCartUserID|null>(null)
    
@@ -19,13 +19,13 @@ export class AuthServiceService {
   constructor(private httpClient: HttpClient) { }
 
   signUp(email: string, password: string){
-   return this.httpClient.post(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${this.key}`,{
+   return this.httpClient.post(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.API_KEY}`,{
       "email":email,"password":password,"returnSecureToken":true
     }).pipe(catchError(this.handleError))
   }
 
   signIn(email: string, password: string) {
-    return this.httpClient.post <User>(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${this.key}`,{
+    return this.httpClient.post <User>(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.API_KEY}`,{
       "email":email,"password":password,"returnSecureToken":true
     }).pipe(catchError(this.handleError), tap(user=>{this.loggedInUser.next(user); this.localStorageSaveUser(user)}))
   }

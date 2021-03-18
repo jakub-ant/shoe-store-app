@@ -20,6 +20,8 @@ import { OrderItemComponent } from './orders/order-item/order-item.component';
 import { OfferItemComponent } from './offer/offer-item/offer-item.component';
 
 
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,6 +44,8 @@ import { OfferItemComponent } from './offer/offer-item/offer-item.component';
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
+    BrowserModule,
+// AngularFireModule.initializeApp(environment.firebase),
   ],
   providers: [],
   bootstrap: [AppComponent]

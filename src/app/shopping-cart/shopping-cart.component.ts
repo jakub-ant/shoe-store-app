@@ -71,7 +71,7 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
 
   deleteItem(cartId:string, userId:string) {
     this.isLoading = true
-    this.deleteCartItemSub = this.dbService.deleteCartItem(cartId)
+     this.deleteCartItemSub = this.dbService.deleteCartItem(cartId, userId) 
       .subscribe(() => {
           this.getCurrentCartSub = this.dbService.getCurrentCart(userId)
           .subscribe(items => {

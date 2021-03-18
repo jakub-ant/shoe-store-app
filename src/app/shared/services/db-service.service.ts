@@ -43,22 +43,49 @@ export class DbServiceService {
 
   addToCart(user: User) {
     return this.httpClient.post(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/shopping-carts.json`, {
-      userId: user.localId,
+      userId: user.idToken,
       userShoppingCart: user.shoppingCart
-    })
+    },        {
+      params: {
+        "provider": "anonymous",
+        "auth": user.idToken
+      }
+    }).pipe(catchError(err => {
+      return throwError(err);
+    }))
   }
 
   addOrder(order: Order) {
-    return this.httpClient.post(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/orders.json`, order)
+    return this.httpClient.post(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/orders.json`, order,
+    {
+      params:  {
+        "provider": "anonymous",
+        "auth": order.userId
+      }
+    })
   }
 
 
-  deleteCartItem(cartId: string) {
-    return this.httpClient.delete(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/shopping-carts/${cartId}.json`)
-  }
+  deleteCartItem(cartId: string,userId:string) {
+ 
+      return this.httpClient.delete(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/shopping-carts/${cartId}.json`,
+      {
+        params: {
+          "provider": "anonymous",
+          "auth": userId
+        }
+      })
+
+   }
 
   getCurrentCart(userId: string) {
-    return this.httpClient.get(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/shopping-carts.json?orderBy="userId"&equalTo="${userId}"`).pipe(catchError(err => {
+    return this.httpClient.get(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/shopping-carts.json?orderBy="userId"&equalTo="${userId}"`
+    , {
+      params: {
+        "provider": "anonymous",
+        "uid": userId
+      }
+    }).pipe(catchError(err => {
       return throwError(err);
     }), map(
       res => {
@@ -91,12 +118,19 @@ export class DbServiceService {
           }, err => console.log(err)))
         return shoppingCartUserID
       }
-    ), tap(shoppingCart => this.authService.loggedInUsersShoppingCart.next(shoppingCart)))
+    ), tap(shoppingCart => {this.authService.loggedInUsersShoppingCart.next(shoppingCart); }))
 
   }
 
   getOrders(userId: string) {
-    return this.httpClient.get(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/orders.json?orderBy="userId"&equalTo="${userId}"`)
+    return this.httpClient.get(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/orders.json?orderBy="userId"&equalTo="${userId}"`,
+    {
+      params: {
+        "provider": "anonymous",
+        "uid": userId
+      }
+    }
+    )
       .pipe(catchError(err => throwError(err)), map(orders => {
         if (orders) {
           const ordersArr: Array < Order >= []

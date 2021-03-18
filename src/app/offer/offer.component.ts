@@ -100,22 +100,22 @@ export class OfferComponent implements OnInit, OnDestroy {
     if (this.authSubscription) this.authSubscription.unsubscribe()
   }
 
-  addToCart(event: any) {
-    const productId: string = event.target.dataset.id;
-    console.log(productId)
-    console.log(this.loggedInUser)
-    if (!this.loggedInUser) return;
-    this.loggedInUser.shoppingCart.length = 0;
-    this.loggedInUser.shoppingCart.push(productId)
-    this.dbService.addToCart(this.loggedInUser).subscribe(
-      () => {
-        this.hideError()
-        if (this.loggedInUser) {
-          this.dbService.getCurrentCart(this.loggedInUser.localId).subscribe()
-        }
-      },
-      () => this.showError()
-    )
-  }
+  // addToCart(event: any) {
+  //   const productId: string = event.target.dataset.id;
+  //   console.log(productId)
+  //   console.log(this.loggedInUser)
+  //   if (!this.loggedInUser) return;
+  //   this.loggedInUser.shoppingCart.length = 0;
+  //   this.loggedInUser.shoppingCart.push(productId)
+  //   this.dbService.addToCart(this.loggedInUser).subscribe(
+  //     () => {
+  //       this.hideError()
+  //       if (this.loggedInUser) {
+  //         this.dbService.getCurrentCart(this.loggedInUser.localId).subscribe()
+  //       }
+  //     },
+  //     (err) => this.showError()
+  //   )
+  // }
 
 }
