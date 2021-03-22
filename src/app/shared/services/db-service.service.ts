@@ -156,6 +156,6 @@ export class DbServiceService {
     if (!loggedInUserString) return;
     const loggedInUser: User = JSON.parse(loggedInUserString)
     this.authService.loggedInUser.next(loggedInUser)
-    this.getCurrentCart(loggedInUser.localId).subscribe()
+    this.getCurrentCart(loggedInUser.idToken).subscribe()
   }
 }

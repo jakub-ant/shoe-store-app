@@ -9,7 +9,7 @@
         {{errorMsg.errorMsg}}
       </div>
     <div class="loader" *ngIf="isLoading">Loading...</div>
-    <div class="row" mb-5>
+    <div class="row">
 
         <app-offer-item *ngFor="let item of itemsArray" [item]="item" [loggedInUser]="loggedInUser" (showErrorMsg)="toggleError($event)">
 
