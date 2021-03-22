@@ -22,6 +22,7 @@ import {
 import {
   ShoppingCartUserID
 } from '../shared/shopping-cart-user-id.model';
+import { User } from '../shared/user.model';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -33,6 +34,8 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
   deleteCartItemSub!: Subscription;
   getCurrentCartSub!: Subscription
   shoppingCart!: ShoppingCartUserID | null;
+  user!:User|null;
+  userSub!:Subscription
   isLoading = false;
   errorMsg: ErrorMsg = {
     errorOccured: false,
@@ -59,6 +62,7 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
   }
   ngOnInit(): void {
     this.isLoading = true
+    this.authService.loggedInUser.subscribe(user=>this.user = user)
     this.shoppingCartSub = this.authService.loggedInUsersShoppingCart.subscribe(
       items => {
         this.errorMsg.errorOccured = false
@@ -70,10 +74,12 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
   }
 
   deleteItem(cartId:string, userId:string) {
-    this.isLoading = true
-     this.deleteCartItemSub = this.dbService.deleteCartItem(cartId, userId) 
+    this.isLoading = true;
+    if(this.user?.idToken)
+     this.deleteCartItemSub = this.dbService.deleteCartItem(cartId, userId, this.user?.idToken) 
       .subscribe(() => {
-          this.getCurrentCartSub = this.dbService.getCurrentCart(userId)
+          if(this.user?.idToken)
+          this.getCurrentCartSub = this.dbService.getCurrentCart(userId, this.user?.idToken)
           .subscribe(items => {
               this.shoppingCart = items;
               this.errorMsg.errorOccured = false;
@@ -97,6 +103,7 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
     if (this.shoppingCartSub) this.shoppingCartSub.unsubscribe()
     if (this.deleteCartItemSub) this.deleteCartItemSub.unsubscribe()
     if (this.getCurrentCartSub) this.getCurrentCartSub.unsubscribe()
+    if (this.userSub) this.userSub.unsubscribe()
   }
 
   addNewOrder() {
@@ -105,7 +112,8 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
         date: new Date()
       }
       const newOrder: Order = Object.assign(this.shoppingCart, currentDate)
-       this.dbService.addOrder(newOrder).subscribe(
+      if(this.user?.idToken)
+       this.dbService.addOrder(newOrder, this.user?.idToken).subscribe(
         ()=>{
           if(this.shoppingCart) this.shoppingCart.shoppingCart.forEach(item=>{
             if(item.cartItemID){

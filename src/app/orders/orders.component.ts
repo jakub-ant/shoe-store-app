@@ -45,7 +45,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
         this.errorMsg.errorOccured = false
         this.loggedInUser = user;
         if (this.loggedInUser) {
-          this.dbService.getOrders(this.loggedInUser.idToken).subscribe(
+          this.dbService.getOrders(this.loggedInUser.localId, this.loggedInUser.idToken).subscribe(
             orders => {
               if (orders) {
                 this.orders = orders;

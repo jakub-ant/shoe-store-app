@@ -54,7 +54,7 @@ export class OfferItemComponent implements OnInit {
       () => {
         this.showErrorMsg.emit(false)
         if (this.loggedInUser) {
-          this.dbService.getCurrentCart(this.loggedInUser.idToken).subscribe(
+          this.dbService.getCurrentCart(this.loggedInUser.localId, this.loggedInUser.idToken).subscribe(
            ()=> {
              this.showMessage =true
               setTimeout(()=>this.showMessage=false, 2000)

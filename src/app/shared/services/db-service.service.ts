@@ -29,8 +29,12 @@ import {
   providedIn: 'root'
 })
 export class DbServiceService {
+  // user!:User|null
 
-  constructor(private httpClient: HttpClient, private authService: AuthServiceService) {}
+  constructor(private httpClient: HttpClient, private authService: AuthServiceService) {
+      // this.authService.loggedInUser.subscribe(user=>this.user=user)
+
+  }
 
   getItems() {
     return this.httpClient.get('https://shoe-store-d0b41-default-rtdb.firebaseio.com/shoes.json')
@@ -43,7 +47,7 @@ export class DbServiceService {
 
   addToCart(user: User) {
     return this.httpClient.post(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/shopping-carts.json`, {
-      userId: user.idToken,
+      userId: user.localId,
       userShoppingCart: user.shoppingCart
     },        {
       params: {
@@ -55,35 +59,35 @@ export class DbServiceService {
     }))
   }
 
-  addOrder(order: Order) {
+  addOrder(order: Order, userToken:string) {
     return this.httpClient.post(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/orders.json`, order,
     {
       params:  {
         "provider": "anonymous",
-        "auth": order.userId
+        "auth": userToken
       }
     })
   }
 
 
-  deleteCartItem(cartId: string,userId:string) {
+  deleteCartItem(cartId: string,userId:string, userToken:string) {
  
       return this.httpClient.delete(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/shopping-carts/${cartId}.json`,
       {
         params: {
           "provider": "anonymous",
-          "auth": userId
+          "auth": userToken
         }
       })
 
    }
 
-  getCurrentCart(userId: string) {
+  getCurrentCart(userId: string, userToken: string) {
     return this.httpClient.get(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/shopping-carts.json?orderBy="userId"&equalTo="${userId}"`
     , {
       params: {
         "provider": "anonymous",
-        "uid": userId
+        "uid": userToken
       }
     }).pipe(catchError(err => {
       return throwError(err);
@@ -118,16 +122,16 @@ export class DbServiceService {
           }, err => console.log(err)))
         return shoppingCartUserID
       }
-    ), tap(shoppingCart => {this.authService.loggedInUsersShoppingCart.next(shoppingCart); }))
+    ), tap(shoppingCart => {this.authService.loggedInUsersShoppingCart.next(shoppingCart); console.log(shoppingCart) }))
 
   }
 
-  getOrders(userId: string) {
+  getOrders(userId: string, userToken:string) {
     return this.httpClient.get(`https://shoe-store-d0b41-default-rtdb.firebaseio.com/orders.json?orderBy="userId"&equalTo="${userId}"`,
     {
       params: {
         "provider": "anonymous",
-        "uid": userId
+        "uid": userToken
       }
     }
     )
@@ -156,6 +160,6 @@ export class DbServiceService {
     if (!loggedInUserString) return;
     const loggedInUser: User = JSON.parse(loggedInUserString)
     this.authService.loggedInUser.next(loggedInUser)
-    this.getCurrentCart(loggedInUser.idToken).subscribe()
+    this.getCurrentCart(loggedInUser.localId, loggedInUser.idToken).subscribe()
   }
 }
