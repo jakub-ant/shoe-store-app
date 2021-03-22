@@ -115,7 +115,7 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
             }
           })
           this.errorMsg.errorOccured= false;
-          this.router.navigate(['orders'])
+          setTimeout(()=>this.router.navigate(['orders']), 500)  
         },
         ()=>this.errorMsg.errorOccured = true
       )
