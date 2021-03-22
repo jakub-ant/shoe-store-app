@@ -20,10 +20,12 @@
           <a class="nav-link" routerLink="offer">Oferta</a>
         </li>
         <li class="nav-item scale" 
-        routerLinkActive="active"
         *ngIf="loggedInUser" 
-        routerLink="shopping-cart">
-          <a class="nav-link" routerLink="offer">Koszyk ({{shoppingCartLength}})</a>
+        routerLinkActive="active"
+        >
+          <a class="nav-link"        
+          routerLink="shopping-cart"
+          >Koszyk ({{shoppingCartLength}})</a>
         </li>
 
       </ul>
