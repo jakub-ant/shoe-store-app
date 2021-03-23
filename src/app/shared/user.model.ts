@@ -2,6 +2,7 @@ export class User {
     displayName!: string;
     email!: string;
     expiresIn!: string;
+    validTill?:Date|string;
     idToken!: string;
     kind!: string;
     localId!: string;

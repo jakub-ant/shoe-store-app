@@ -60,7 +60,7 @@ export class LogInComponent implements OnInit, OnDestroy {
       .subscribe(user => {
           this.isLoading = false
           this.router.navigate(['/offer']);
-          this.dbService.getCurrentCart(user.localId, user.idToken).subscribe(res=>console.log(res))
+          this.dbService.getCurrentCart(user.localId, user.idToken).subscribe()
           this.isLoading = false
         },
         err => {

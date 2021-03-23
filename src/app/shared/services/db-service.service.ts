@@ -29,10 +29,8 @@ import {
   providedIn: 'root'
 })
 export class DbServiceService {
-  // user!:User|null
 
   constructor(private httpClient: HttpClient, private authService: AuthServiceService) {
-      // this.authService.loggedInUser.subscribe(user=>this.user=user)
 
   }
 
@@ -122,7 +120,7 @@ export class DbServiceService {
           }, err => console.log(err)))
         return shoppingCartUserID
       }
-    ), tap(shoppingCart => {this.authService.loggedInUsersShoppingCart.next(shoppingCart); console.log(shoppingCart) }))
+    ), tap(shoppingCart => this.authService.loggedInUsersShoppingCart.next(shoppingCart)))
 
   }
 
@@ -156,10 +154,17 @@ export class DbServiceService {
   }
 
   autoLogin() {
+    const currentDate = new Date(Date.now())
     const loggedInUserString = localStorage.getItem('loggedUser');
     if (!loggedInUserString) return;
     const loggedInUser: User = JSON.parse(loggedInUserString)
-    this.authService.loggedInUser.next(loggedInUser)
-    this.getCurrentCart(loggedInUser.localId, loggedInUser.idToken).subscribe()
+    loggedInUser.validTill = new Date(String(loggedInUser.validTill))
+    if(loggedInUser.validTill&&(loggedInUser.validTill>currentDate)) {
+          this.authService.loggedInUser.next(loggedInUser)
+          this.getCurrentCart(loggedInUser.localId, loggedInUser.idToken).subscribe()
+    } else {
+      localStorage.clear()
+      this.authService.loggedInUser.next(null)
+    }
   }
 }
