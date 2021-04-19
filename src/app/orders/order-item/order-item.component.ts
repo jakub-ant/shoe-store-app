@@ -1,20 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Order } from 'src/app/shared/order.model';
+import { Component, Input } from '@angular/core';
+import { Order } from 'src/app/shared/interfaces/order.interface';
 
 @Component({
   selector: 'app-order-item',
   templateUrl: './order-item.component.html',
   styleUrls: ['./order-item.component.scss']
 })
-export class OrderItemComponent implements OnInit {
+export class OrderItemComponent  {
   @Input() order!:Order;
   showDetails = false;
-  
-
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
 }

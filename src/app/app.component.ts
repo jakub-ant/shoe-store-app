@@ -9,7 +9,7 @@ import { DbServiceService } from './shared/services/db-service.service';
 export class AppComponent implements OnInit{
   title = 'shoe-store-app';
 
-  constructor(private dbService:DbServiceService){}
+  constructor(private readonly dbService:DbServiceService){}
 
   ngOnInit(){
     this.dbService.autoLogin()

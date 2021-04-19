@@ -1,7 +1,6 @@
 import {
   Component,
   OnDestroy,
-  OnInit
 } from '@angular/core';
 import {
   FormControl,
@@ -26,50 +25,47 @@ import {
   templateUrl: './log-in.component.html',
   styleUrls: ['./log-in.component.scss']
 })
-export class LogInComponent implements OnInit, OnDestroy {
+export class LogInComponent implements OnDestroy {
   isLoading: boolean = false;
-  loginSub!: Subscription;
-  errMessage!: string | null
-
+  errMessage!: string | null;
   logInForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(8)])
   })
+  private _loginSub!: Subscription;
   get email() {
-    return this.logInForm.get('email')
+    return this.logInForm.get('email');
   }
   get password() {
-    return this.logInForm.get('password')
+    return this.logInForm.get('password');
   }
   get emailValue() {
-    return this.logInForm.get('email')?.value
+    return this.logInForm.get('email') ?.value;
   }
   get passwordValue() {
-    return this.logInForm.get('password')?.value
+    return this.logInForm.get('password') ?.value;
   }
 
-  constructor(private authServiceService: AuthServiceService, private router: Router, private dbService: DbServiceService) {}
-
-  ngOnInit(): void {
-
-  }
+  constructor(private readonly _authServiceService: AuthServiceService, private readonly _router: Router, private readonly _dbService: DbServiceService) {}
 
   onSubmit() {
-    this.isLoading = true
-    this.loginSub = this.authServiceService.signIn(this.emailValue, this.passwordValue)
+    this.isLoading = true;
+    this._loginSub = this._authServiceService.signIn(this.emailValue, this.passwordValue)
       .subscribe(user => {
           this.isLoading = false
-          this.router.navigate(['/offer']);
-          this.dbService.getCurrentCart(user.localId, user.idToken).subscribe()
-          this.isLoading = false
+          this._router.navigate(['/offer']);
+          this._dbService.getCurrentCart(user.localId, user.idToken).subscribe();
+          this.isLoading = false;
         },
         err => {
           this.errMessage = err.error.error.message;
-          this.logInForm.reset()
-          this.isLoading = false
+          this.logInForm.reset();
+          this.isLoading = false;
         })
   }
   ngOnDestroy() {
-    if (this.loginSub) this.loginSub.unsubscribe()
+    if (this._loginSub) {
+      this._loginSub.unsubscribe();
+    }
   }
 }

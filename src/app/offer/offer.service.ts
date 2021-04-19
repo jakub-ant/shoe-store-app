@@ -14,15 +14,13 @@ import {
 })
 export class OfferService {
   items = new BehaviorSubject < any | null > (null);
-  offerSubscription!: Subscription;
-  constructor(private dbService: DbServiceService) {
-    this.fetchItems()
+  private _offerSubscription!: Subscription;
+  constructor(private readonly _dbService: DbServiceService) {
+    this.fetchItems();
   }
   fetchItems() {
-    this.offerSubscription = this.dbService.getItems()
-      .subscribe(items => {
-          this.items.next(items)
-        },
+    this._offerSubscription = this._dbService.getItems()
+      .subscribe(items => this.items.next(items),
         err=>err
       )
   }

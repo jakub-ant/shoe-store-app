@@ -1,4 +1,4 @@
-export class OfferItem {
+export interface OfferItem {
     "id": string;
     "name": string;
     "desc": {

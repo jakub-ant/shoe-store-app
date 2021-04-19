@@ -11,12 +11,16 @@ import {
 } from '../shared/services/auth-service.service';
 import {
   User
-} from '../shared/user.model';
+} from '../shared/interfaces/user.interface';
 import {
   OfferService
 } from './offer.service';
-import{ErrorMsg} from '../shared/error-msg.model';
-import { OfferItem } from '../shared/offer-item.model';
+import {
+  ErrorMsg
+} from '../shared/interfaces/error-msg.interface';
+import {
+  OfferItem
+} from '../shared/interfaces/offer-item.interface';
 
 
 @Component({
@@ -37,8 +41,8 @@ export class OfferComponent implements OnInit, OnDestroy {
   }
 
   constructor(private authService: AuthServiceService, private offerService: OfferService) {}
-  toggleError(event:boolean){
-    if(event){
+  toggleError(event: boolean) {
+    if (event) {
       this.showError()
     } else {
       this.hideError()
@@ -50,7 +54,7 @@ export class OfferComponent implements OnInit, OnDestroy {
   hideError() {
     this.errorMsg.errorOccured = false
   }
-  
+
   renderOffers() {
     for (const key in this.items) {
       if (Object.prototype.hasOwnProperty.call(this.items, key)) {
@@ -68,20 +72,22 @@ export class OfferComponent implements OnInit, OnDestroy {
       this.hideError()
       if (user) {
         this.loggedInUser = user;
-        this.loggedInUser.shoppingCart = []
+        if (this.loggedInUser) {
+          this.loggedInUser.shoppingCart = []
+        }
       }
     }, () => this.showError())
     this.offerSubscription = this.offerService.items.subscribe(items => {
       this.hideError()
       this.items = items;
-      this.renderOffers()
+      this.renderOffers();
     }, () => this.showError())
 
   }
 
   ngOnDestroy() {
-    if (this.offerSubscription) this.offerSubscription.unsubscribe()
-    if (this.authSubscription) this.authSubscription.unsubscribe()
+    this.offerSubscription.unsubscribe();
+    this.authSubscription.unsubscribe();
   }
 
 

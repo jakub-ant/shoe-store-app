@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Order } from './order.model';
+import { Order } from '../shared/interfaces/order.interface';
  
 @Pipe({name: 'orderTotal'})
 export class orderTotalPipe implements PipeTransform {
