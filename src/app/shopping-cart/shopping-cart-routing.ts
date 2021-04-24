@@ -7,7 +7,7 @@ import {
   } from '@angular/router';
   import {
     AuthGuard
-  } from '../shared/auth.guard';
+  } from '../shared/authGuard/auth.guard';
 import { ShoppingCartComponent } from './shopping-cart.component';
  
   

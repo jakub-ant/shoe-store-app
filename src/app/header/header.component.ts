@@ -54,6 +54,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
   private _authSubscription!: Subscription;
   private _loggedInUsersShoppingCartSub!: Subscription;
+  private triggerAnimation() {
+    if (typeof this.scale == 'undefined') {
+      //Blocks the animation if the component is initialized.
+      this.scale = false;
+    } else {
+      this.scale = true;
+      setTimeout(() => this.scale = false, 1000);
+    }
+  }
 
   constructor(private readonly _authService: AuthServiceService) {}
 
@@ -67,13 +76,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this._loggedInUsersShoppingCartSub = this._authService.loggedInUsersShoppingCart
       .subscribe(res => {
           if (res) {
-            if (typeof this.scale == 'undefined') {
-              //Blocks the animation if the component is initialized.
-              this.scale = false;
-            } else {
-              this.scale = true;
-              setTimeout(() => this.scale = false, 1000);
-            }
+            this.triggerAnimation();
             this.shoppingCartLength = res.shoppingCart.length;
           } else {
             this.shoppingCartLength = 0;

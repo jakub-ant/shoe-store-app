@@ -1,4 +1,4 @@
 export interface ErrorMsg {
-    errorOccured: boolean,
+    errorOccured: boolean;
     errorMsg: string
 }

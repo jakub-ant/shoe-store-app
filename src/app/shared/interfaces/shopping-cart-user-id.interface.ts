@@ -1,18 +1,9 @@
-export interface ShoppingCartUserID {
-  userId: string;
-  shoppingCart: {
-    cartItemID: string | null,
-    productID: string
-  } [];
-  shoppingCartItems: {
-    cartItemId: string
-    desc: {
-      gender: string,
-      size: number
-    }
-    imageURL: string
-    name: string
-    price: number
-  } [] ;
+import { ShoppingCartItem } from "./shopping-cart-item.interface";
+import { ShoppingCart } from "./shopping-cart.interface";
 
+ export interface ShoppingCartUserID {
+  userId: string;
+  shoppingCart: ShoppingCart[];
+  shoppingCartItems: ShoppingCartItem [];
 }
+ 

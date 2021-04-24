@@ -29,18 +29,17 @@ import {
   styleUrls: ['./offer.component.scss']
 })
 export class OfferComponent implements OnInit, OnDestroy {
-  items: any
   itemsArray: OfferItem[] = [];
-  offerSubscription!: Subscription;
   loggedInUser!: User | null;
-  authSubscription!: Subscription;
-  isLoading: boolean = false
+  isLoading: boolean = false;
   errorMsg: ErrorMsg = {
     errorOccured: false,
     errorMsg: 'Wystąpił błąd'
   }
+  private _offerSubscription!: Subscription;
+  private _authSubscription!: Subscription;
 
-  constructor(private authService: AuthServiceService, private offerService: OfferService) {}
+  constructor(private readonly _authService: AuthServiceService, private readonly _offerService: OfferService) {}
   toggleError(event: boolean) {
     if (event) {
       this.showError()
@@ -55,20 +54,18 @@ export class OfferComponent implements OnInit, OnDestroy {
     this.errorMsg.errorOccured = false
   }
 
-  renderOffers() {
-    for (const key in this.items) {
-      if (Object.prototype.hasOwnProperty.call(this.items, key)) {
-        const element = this.items[key];
-        element.id = key;
-        this.itemsArray.push(element);
-      }
+  renderOffers(items: OfferItem[] | null) {
+    if(items) {
+      this.itemsArray = items;
+      this.isLoading = false
+    } else {
+      this.showError();
     }
-    this.isLoading = false
   }
 
   ngOnInit(): void {
     this.isLoading = true
-    this.authSubscription = this.authService.loggedInUser.subscribe(user => {
+    this._authSubscription = this._authService.loggedInUser.subscribe(user => {
       this.hideError()
       if (user) {
         this.loggedInUser = user;
@@ -77,18 +74,16 @@ export class OfferComponent implements OnInit, OnDestroy {
         }
       }
     }, () => this.showError())
-    this.offerSubscription = this.offerService.items.subscribe(items => {
+    this._offerSubscription = this._offerService.items.subscribe(items => {
       this.hideError()
-      this.items = items;
-      this.renderOffers();
+      this.renderOffers(items);
     }, () => this.showError())
 
   }
 
   ngOnDestroy() {
-    this.offerSubscription.unsubscribe();
-    this.authSubscription.unsubscribe();
+    this._offerSubscription.unsubscribe();
+    this._authSubscription.unsubscribe();
   }
-
 
 }

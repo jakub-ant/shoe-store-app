@@ -26,19 +26,21 @@ export class AuthServiceService {
   }
 
   signUp(email: string, password: string):Observable<Object>{
-   return this.httpClient.post(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.API_KEY}`,{
+   return this.httpClient.post(environment.signUpLink,{
       "email":email,"password":password,"returnSecureToken":true
-    }).pipe(catchError(this.handleError))
+    }).pipe(catchError(this.handleError));
   }
 
   signIn(email: string, password: string):Observable<User> {
-    return this.httpClient.post <User>(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.API_KEY}`,{
+    return this.httpClient.post <User>(environment.logInLink,{
       "email":email,"password":password,"returnSecureToken":true
-    }).pipe(catchError(this.handleError),map(user=>AuthServiceService.getUserExpirationDate(user)), tap(user=>{this.loggedInUser.next(user); this.localStorageSaveUser(user)}))
+    }).pipe(catchError(this.handleError)
+    ,map(user=>AuthServiceService.getUserExpirationDate(user))
+    ,tap(user=>{this.loggedInUser.next(user); this.localStorageSaveUser(user)}));
   }
 
   handleError(errorRes:HttpErrorResponse):Observable<never>{
-   return throwError(errorRes)
+   return throwError(errorRes);
   }
 
   logOut():void{

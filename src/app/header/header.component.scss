@@ -1,7 +1,6 @@
 a {
     cursor: pointer;
 }
-
 .fa-shopping-bag{
     transition: 0.5s;
     &:hover{
@@ -13,4 +12,11 @@ a {
     &:hover{
         transform: scale(1.05);
     }
+}
+.cursor-pointer:hover {
+    cursor: pointer;
+}
+
+.larger-font {
+    font-size: 25px;
 }
