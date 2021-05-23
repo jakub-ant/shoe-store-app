@@ -5,6 +5,4 @@ import { Component } from '@angular/core';
   templateUrl: './home.component.html',
   styles: ['.carousel-inner{ border-radius: 5%;}']
 })
-export class HomeComponent   {
-
-}
+export class HomeComponent   {}

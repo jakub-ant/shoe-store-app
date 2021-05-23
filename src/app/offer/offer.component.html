@@ -1,18 +1,17 @@
-<div class="container" >
-    <header>
-        <h1>Wybierz buty, kóre pasują do Ciebie!</h1>
-        <hr>
-    </header>
+<div class="container">
+  <header>
+    <h1>Wybierz buty, kóre pasują do Ciebie!</h1>
+    <hr>
+  </header>
 </div>
 <div class="container mb-5">
-    <div *ngIf="errorMsg.errorOccured" class="alert alert-danger" role="alert">
-        {{errorMsg.errorMsg}}
-      </div>
-    <div class="loader" *ngIf="isLoading">Loading...</div>
-    <div class="row">
-
-        <app-offer-item *ngFor="let item of itemsArray" [item]="item" [loggedInUser]="loggedInUser" (showErrorMsg)="toggleError($event)">
-
-        </app-offer-item>
-    </div>
+  <div *ngIf="errorMsg.errorOccured" class="alert alert-danger" role="alert">
+    {{errorMsg.errorMsg}}
+  </div>
+  <div class="loader" *ngIf="isLoading">Loading...</div>
+  <div class="row">
+    <app-offer-item *ngFor="let item of itemsArray" [item]="item" [loggedInUser]="loggedInUser"
+      (showErrorMsg)="toggleError($event)">
+    </app-offer-item>
+  </div>
 </div>

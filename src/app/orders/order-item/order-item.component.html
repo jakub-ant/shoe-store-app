@@ -1,8 +1,9 @@
-<li class="list-group-item"> 
-    <span class="item-name">Data zamówienia: {{order.date |date:'dd.LL.Y'}} | Wartość: {{  order|orderTotal }} PLN</span> <button type="button" class="btn btn-success ml-3" (click)="showDetails=!showDetails">Szczegóły</button>
-    <ul class="list-group mt-2" *ngIf="showDetails">
-    <li *ngFor="let item of order.shoppingCartItems"    class="list-group-item">  
-            <span class="item-name">{{item.name}} | Cena: {{item.price}} PLN</span> 
-      </li>
-    </ul>
+<li class="list-group-item">
+  <span class="item-name">Data zamówienia: {{order.date |date:'dd.LL.Y'}} | Wartość: {{  order|orderTotal }} PLN</span>
+  <button type="button" class="btn btn-success ml-3" (click)="showDetails=!showDetails">Szczegóły</button>
+  <ul class="list-group mt-2" *ngIf="showDetails">
+    <li *ngFor="let item of order.shoppingCartItems" class="list-group-item">
+      <span class="item-name">{{item.name}} | Cena: {{item.price}} PLN</span>
+    </li>
+  </ul>
 </li>

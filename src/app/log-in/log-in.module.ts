@@ -17,4 +17,4 @@ import { UiModule } from '../shared/ui/ui.module';
   declarations: [LogInComponent  ],
    exports:[LogInComponent, LogInRoutingModule],
 })
-export class   LogInModule { }
+export class LogInModule { }

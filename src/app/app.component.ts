@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DbServiceService } from './shared/services/db-service.service';
+import { APIService } from './shared/services/api.service';
 
 @Component({
   selector: 'app-root',
@@ -9,9 +9,9 @@ import { DbServiceService } from './shared/services/db-service.service';
 export class AppComponent implements OnInit{
   title = 'shoe-store-app';
 
-  constructor(private readonly dbService:DbServiceService){}
+  constructor(private readonly apiService:APIService){}
 
   ngOnInit(){
-    this.dbService.autoLogin()
+    this.apiService.autoLogin()
   }
 }

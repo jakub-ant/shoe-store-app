@@ -29,7 +29,7 @@ import {
   styleUrls: ['./header.component.scss'],
   animations: [trigger('animateTheCart', [
     state('scaleUp', style({
-      transform: 'scale(1.2)',
+      transform: 'scale(1.1)',
       color: 'black'
     })),
     state('scaleDown', style({
@@ -43,17 +43,17 @@ import {
 export class HeaderComponent implements OnInit, OnDestroy {
   loggedInUser!: User | null;
   shoppingCartLength!: number;
-  scale!: boolean;
+  scale!: boolean | undefined;
   userError: ErrorMsg = {
     errorMsg: 'Wystąpił błąd',
     errorOccured: false
   };
-  shoppingCartError:ErrorMsg={
+  shoppingCartError: ErrorMsg = {
     errorMsg: 'Wystąpił błąd',
     errorOccured: false
   }
-  private _authSubscription!: Subscription;
-  private _loggedInUsersShoppingCartSub!: Subscription;
+  private authSubscription!: Subscription;
+  private loggedInUsersShoppingCartSub!: Subscription;
   private triggerAnimation() {
     if (typeof this.scale == 'undefined') {
       //Blocks the animation if the component is initialized.
@@ -64,16 +64,22 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  constructor(private readonly _authService: AuthServiceService) {}
+  constructor(private readonly authService: AuthServiceService) {}
 
   ngOnInit(): void {
-    this._authSubscription = this._authService.loggedInUser
+    this.authSubscription = this.authService.loggedInUser
       .subscribe(user => {
           this.userError.errorOccured = false;
           this.loggedInUser = user;
+          if (!this.loggedInUser) {
+            this.scale = undefined;
+          }
         },
-        () => this.userError.errorOccured = true);
-    this._loggedInUsersShoppingCartSub = this._authService.loggedInUsersShoppingCart
+        () => {
+          this.userError.errorOccured = true;
+          this.scale = undefined;
+        });
+    this.loggedInUsersShoppingCartSub = this.authService.loggedInUsersShoppingCart
       .subscribe(res => {
           if (res) {
             this.triggerAnimation();
@@ -85,16 +91,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
         },
         err => this.shoppingCartError.errorOccured = true);
   }
-  logOut() {
-    this._authService.logOut();
+  logOut(): void {
+    this.authService.logOut();
   }
-  ngOnDestroy() {
-    if (this._authSubscription) {
-      this._authSubscription.unsubscribe();
+  private unsubscribe(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
     }
-    if (this._loggedInUsersShoppingCartSub) {
-      this._loggedInUsersShoppingCartSub.unsubscribe();
+    if (this.loggedInUsersShoppingCartSub) {
+      this.loggedInUsersShoppingCartSub.unsubscribe();
     }
   }
-
+  ngOnDestroy(): void {
+    this.unsubscribe();
+  }
 }

@@ -16,8 +16,8 @@ import {
   AuthServiceService
 } from '../shared/services/auth-service.service';
 import {
-  DbServiceService
-} from '../shared/services/db-service.service';
+  APIService
+} from '../shared/services/api.service';
 import {
   User
 } from '../shared/interfaces/user.interface';
@@ -25,7 +25,6 @@ import {
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
-  styleUrls: ['./orders.component.scss']
 })
 export class OrdersComponent implements OnInit, OnDestroy {
   orders!: Array < Order > | null;
@@ -35,33 +34,33 @@ export class OrdersComponent implements OnInit, OnDestroy {
     errorOccured: false,
     errorMsg: 'Wystąpił błąd'
   }
-  private _loggedInUserSub!: Subscription;
-  constructor(private readonly _authService: AuthServiceService, private readonly _dbService: DbServiceService) {}
-
+  private loggedInUserSub!: Subscription;
+  constructor(private readonly _authService: AuthServiceService, private readonly apiService: APIService) {}
 
   ngOnInit(): void {
-    this._loggedInUserSub = this._authService.loggedInUser.subscribe(user => {
+    this.loggedInUserSub = this._authService.loggedInUser.subscribe(user => {
         this.errorMsg.errorOccured = false;
         this.loggedInUser = user;
         if (this.loggedInUser) {
-          this._dbService.getOrders(this.loggedInUser.localId, this.loggedInUser.idToken).subscribe(
-            orders => {
-              if (orders) {
-                this.orders = orders;
-                this.orders.sort((a, b) => (a.date < b.date) ? 1 : ((b.date < a.date) ? -1 : 0))
-              } else {
-                this.orders = orders
-              }
-            },
-            () => this.errorMsg.errorOccured = true
-          )
+          this.apiService.getOrders(this.loggedInUser.localId, this.loggedInUser.idToken)
+            .subscribe(
+              orders => {
+                if (orders) {
+                  this.orders = orders;
+                  this.orders.sort((a, b) => (a.date < b.date) ? 1 : ((b.date < a.date) ? -1 : 0))
+                } else {
+                  this.orders = orders
+                }
+              },
+              () => this.errorMsg.errorOccured = true
+            )
         }
       },
       () => this.errorMsg.errorOccured = true);
   }
   ngOnDestroy() {
-    if (this._loggedInUserSub) {
-      this._loggedInUserSub.unsubscribe();
+    if (this.loggedInUserSub) {
+      this.loggedInUserSub.unsubscribe();
     }
   }
 }

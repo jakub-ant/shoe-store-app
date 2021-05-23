@@ -14,8 +14,6 @@ import {
   OfferRoutingModule
 } from './offer-routing.module';
  
-
-
 @NgModule({
   imports: [
     CommonModule,

@@ -17,8 +17,8 @@ import {
   AuthServiceService
 } from '../shared/services/auth-service.service';
 import {
-  DbServiceService
-} from '../shared/services/db-service.service';
+  APIService
+} from '../shared/services/api.service';
 
 @Component({
   selector: 'app-log-in',
@@ -32,7 +32,7 @@ export class LogInComponent implements OnDestroy {
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(8)])
   })
-  private _loginSub!: Subscription;
+  private loginSub!: Subscription;
   get email() {
     return this.logInForm.get('email');
   }
@@ -46,15 +46,15 @@ export class LogInComponent implements OnDestroy {
     return this.logInForm.get('password') ?.value;
   }
 
-  constructor(private readonly _authServiceService: AuthServiceService, private readonly _router: Router, private readonly _dbService: DbServiceService) {}
+  constructor(private readonly authServiceService: AuthServiceService, private readonly router: Router, private readonly apiService: APIService) {}
 
   onSubmit() {
     this.isLoading = true;
-    this._loginSub = this._authServiceService.signIn(this.emailValue, this.passwordValue)
+    this.loginSub = this.authServiceService.signIn(this.emailValue, this.passwordValue)
       .subscribe(user => {
           this.isLoading = false
-          this._router.navigate(['/offer']);
-          this._dbService.getCurrentCart(user.localId, user.idToken).subscribe();
+          this.router.navigate(['/offer']);
+          this.apiService.getCurrentCart(user.localId, user.idToken).subscribe();
           this.isLoading = false;
         },
         err => {
@@ -64,8 +64,8 @@ export class LogInComponent implements OnDestroy {
         })
   }
   ngOnDestroy() {
-    if (this._loginSub) {
-      this._loginSub.unsubscribe();
+    if (this.loginSub) {
+      this.loginSub.unsubscribe();
     }
   }
 }

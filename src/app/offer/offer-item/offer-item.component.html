@@ -1,16 +1,15 @@
-<div class=" col-m-3" >
-    <div class="card" style="width: 18rem;">
-        <img class="card-img-top" [src]="item.imageURL" [alt]="item.name" style="width: 100%;">
-        <div class="card-body">
-          <h5 class="card-title">{{item.name}}</h5>
-          <p>Rozmiar: {{item.desc.size}}</p>
-          <p>Płeć: {{item.desc.gender}}</p>
-          <p>Cena {{item.price}} PLN</p>
-        <a class="btn btn-primary" [attr.data-id]="item.id" (click)="addToCart($event)">Dodaj do koszyka</a>
-        </div>
-        <div class="addedItem" 
-        [@showHideMessage]="showMessage ? 'show':'hide'"
-        ><p>Produkt został dodany do koszyka</p></div>
-      </div>
- 
+<div class=" col-m-3">
+  <div class="card" style="width: 18rem;">
+    <img class="card-img-top" [src]="item.imageURL" [alt]="item.name" style="width: 100%;">
+    <div class="card-body">
+      <h5 class="card-title">{{item.name}}</h5>
+      <p>Rozmiar: {{item.desc.size}}</p>
+      <p>Płeć: {{item.desc.gender}}</p>
+      <p>Cena {{item.price}} PLN</p>
+      <a class="btn btn-primary" [attr.data-id]="item.id" (click)="addToCart($event)">Dodaj do koszyka</a>
+    </div>
+    <div class="addedItem" [@showHideMessage]="showMessage ? 'show':'hide'">
+      <p>Produkt został dodany do koszyka</p>
+    </div>
+  </div>
 </div>

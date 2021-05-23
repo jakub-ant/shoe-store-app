@@ -30,7 +30,7 @@ export class SignUpComponent implements OnDestroy {
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(8)])
   })
-  private _signupSub!: Subscription;
+  private signupSub!: Subscription;
   get email(): AbstractControl | null {
     return this.signUpForm.get('email');
   }
@@ -48,7 +48,7 @@ export class SignUpComponent implements OnDestroy {
 
   onSubmit() {
     this.isLoading = true;
-    this._signupSub = this.autService.signUp(this.emailValue, this.passwordValue)
+    this.signupSub = this.autService.signUp(this.emailValue, this.passwordValue)
       .subscribe(
         () => {
           this.isLoading = false;
@@ -62,8 +62,8 @@ export class SignUpComponent implements OnDestroy {
       )
   }
   ngOnDestroy() {
-    if (this._signupSub) {
-      this._signupSub.unsubscribe();
+    if (this.signupSub) {
+      this.signupSub.unsubscribe();
     }
   }
 }

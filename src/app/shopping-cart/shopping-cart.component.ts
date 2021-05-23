@@ -19,8 +19,8 @@ import {
   AuthServiceService
 } from '../shared/services/auth-service.service';
 import {
-  DbServiceService
-} from '../shared/services/db-service.service';
+  APIService
+} from '../shared/services/api.service';
 import {
   ShoppingCartUserID
 } from '../shared/interfaces/shopping-cart-user-id.interface';
@@ -45,7 +45,7 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
   private _deleteCartItemSub!: Subscription;
   private _getCurrentCartSub!: Subscription;
   private _userSub!: Subscription
-  constructor(private readonly authService: AuthServiceService, private readonly dbService: DbServiceService, private readonly router: Router) {}
+  constructor(private readonly authService: AuthServiceService, private readonly apiService: APIService, private readonly router: Router) {}
   get totalValue(): number {
     if (this.shoppingCart && !this.isLoading) {
       const reducer = (accumulator: number, currentValue: number) => accumulator + currentValue;
@@ -78,10 +78,10 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
   deleteItem(cartId: string, userId: string) {
     this.isLoading = true;
     if (this.user ?.idToken)
-      this._deleteCartItemSub = this.dbService.deleteCartItem(cartId, userId, this.user?.idToken)
+      this._deleteCartItemSub = this.apiService.deleteCartItem(cartId, userId, this.user?.idToken)
       .subscribe(() => {
           if (this.user?.idToken)
-            this._getCurrentCartSub = this.dbService.getCurrentCart(userId, this.user?.idToken)
+            this._getCurrentCartSub = this.apiService.getCurrentCart(userId, this.user?.idToken)
             .subscribe(items => {
                 this.shoppingCart = items;
                 this.errorMsg.errorOccured = false;
@@ -107,7 +107,7 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
       }
       const newOrder: Order = Object.assign(this.shoppingCart, currentDate)
       if (this.user ?.idToken)
-        this.dbService.addOrder(newOrder, this.user ?.idToken).subscribe(
+        this.apiService.addOrder(newOrder, this.user.idToken).subscribe(
           () => {
             if (this.shoppingCart) this.shoppingCart.shoppingCart.forEach(item => {
               if (item.cartItemID) {

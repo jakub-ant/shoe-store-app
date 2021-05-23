@@ -32,9 +32,7 @@ import { ShoppingCartModule } from './shopping-cart/shopping-cart.module';
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

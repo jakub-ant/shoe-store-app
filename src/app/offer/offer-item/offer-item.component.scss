@@ -1,34 +1,40 @@
 .col-m-3 {
-    margin: 10px 30px;
+  margin: 10px 30px;
 }
+
 img {
-    width: 300px;
-    height: 200px;
-    transition: 0.3s;
-}
-img:hover{
+  width: 300px;
+  height: 200px;
+  transition: 0.3s;
+  &:hover {
     transform: scale(0.95);
+  }
 }
-.btn{
-    transition: 0.2s;
-}
-.btn:hover{
+
+.btn {
+  transition: 0.2s;
+  &:hover {
     transform: scale(1.05);
+  }
 }
-.row{
-    margin-bottom: 100px;}
+
+.row {
+  margin-bottom: 100px;
+}
+
 .addedItem {
-    position: absolute; 
-    width: 100%; 
-    height: 0;  
-    background-color: rgb(58, 184, 152);
-    opacity: 0; 
-    text-align: center;
-    font-size: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    p {
-        padding: 20px;
-    }
+  position: absolute;
+  width: 100%;
+  height: 0;
+  background-color: rgb(58, 184, 152);
+  opacity: 0;
+  text-align: center;
+  font-size: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  p {
+    padding: 20px;
+  }
 }

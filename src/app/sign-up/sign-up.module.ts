@@ -13,9 +13,9 @@ import {
 import {
   SignUpRoutingModule
 } from './sign-up-routing.module';
-import { UiModule } from '../shared/ui/ui.module';
-
-
+import {
+  UiModule
+} from '../shared/ui/ui.module';
 
 @NgModule({
   imports: [

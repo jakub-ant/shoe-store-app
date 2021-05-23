@@ -5,24 +5,26 @@ import {
   BehaviorSubject,
   Subscription
 } from "rxjs";
-import { OfferItem } from "../shared/interfaces/offer-item.interface";
 import {
-  DbServiceService
-} from "../shared/services/db-service.service";
+  OfferItem
+} from "../shared/interfaces/offer-item.interface";
+import {
+  APIService
+} from "../shared/services/api.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class OfferService {
   items = new BehaviorSubject < OfferItem[] | null > (null);
-  private _offerSubscription!: Subscription;
-  constructor(private readonly _dbService: DbServiceService) {
+  private offerSubscription!: Subscription;
+  constructor(private readonly apiService: APIService) {
     this.fetchItems();
   }
   fetchItems() {
-    this._offerSubscription = this._dbService.getItems()
+    this.offerSubscription = this.apiService.getItems()
       .subscribe(items => this.items.next(items),
-        err=>err
+        err => err
       )
   }
 }

@@ -1,22 +1,28 @@
 $max-size:50px;
+
 @keyframes shake {
-  0%{
+  0% {
     transform: translate(1px, 1px) rotate(1deg);
   }
-  20%{
+
+  20% {
     transform: translate(-1px, -1px) rotate(-1deg);
   }
-  40%{
+
+  40% {
     transform: translate(1px, 1px) rotate(1deg);
   }
-  60%{
+
+  60% {
     transform: translate(-1px, 1px) rotate(-1deg);
   }
-  80%{
+
+  80% {
     transform: translate(1px, 1px) rotate(1deg);
   }
-  100%{
-    transform: translate(-1px,-1px) rotate(-1deg);
+
+  100% {
+    transform: translate(-1px, -1px) rotate(-1deg);
   }
 }
 
@@ -28,7 +34,6 @@ $max-size:50px;
       background-color: rgba($color: #8d8c8c, $alpha: 0.8);
       color: rgb(252, 235, 235);
     }
-
 
     .item-name {
       position: absolute;
@@ -46,10 +51,7 @@ $max-size:50px;
           cursor: pointer;
         }
       }
-
-
     }
-
     img {
       margin-right: $max-size;
       max-height: $max-size;

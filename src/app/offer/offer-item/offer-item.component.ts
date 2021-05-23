@@ -8,8 +8,8 @@ import {
   OfferItem
 } from 'src/app/shared/interfaces/offer-item.interface';
 import {
-  DbServiceService
-} from 'src/app/shared/services/db-service.service';
+  APIService
+} from 'src/app/shared/services/api.service';
 import {
   User
 } from 'src/app/shared/interfaces/user.interface';
@@ -52,7 +52,7 @@ export class OfferItemComponent {
   showMessage = false
 
 
-  constructor(private readonly dbService: DbServiceService) {}
+  constructor(private readonly apiService: APIService) {}
 
   addToCart(event: any) {
     const productId: string = event.target.dataset.id;
@@ -61,11 +61,11 @@ export class OfferItemComponent {
     } else {
       this.loggedInUser.shoppingCart.length = 0;
       this.loggedInUser.shoppingCart.push(productId)
-      this.dbService.addToCart(this.loggedInUser).subscribe(
+      this.apiService.addToCart(this.loggedInUser).subscribe(
         () => {
           this.showErrorMsg.emit(false);
           if (this.loggedInUser) {
-            this.dbService.getCurrentCart(this.loggedInUser.localId, this.loggedInUser.idToken).subscribe(
+            this.apiService.getCurrentCart(this.loggedInUser.localId, this.loggedInUser.idToken).subscribe(
               () => {
                 this.showMessage = true;
                 setTimeout(() => this.showMessage = false, 2000);
