@@ -45,20 +45,18 @@ export class OfferComponent implements OnInit, OnDestroy {
   constructor(private readonly authService: AuthServiceService, private readonly offerService: OfferService) {}
 
   ngOnInit(): void {
-    this.isLoading = true
+    this.isLoading = true;
     this.authSubscription = this.authService.loggedInUser
       .subscribe(user => {
-        this.hideError()
+        this.hideError();
         if (user) {
           this.loggedInUser = user;
-          if (this.loggedInUser) {
-            this.loggedInUser.shoppingCart = []
-          }
+          this.loggedInUser.shoppingCart = [];
         }
       }, () => this.showError())
     this.offerSubscription = this.offerService.items
       .subscribe(items => {
-        this.hideError()
+        this.hideError();
         this.renderOffers(items);
       }, () => this.showError())
   }
@@ -76,7 +74,7 @@ export class OfferComponent implements OnInit, OnDestroy {
   renderOffers(items: OfferItem[] | null): void {
     if (items) {
       this.itemsArray = items;
-      this.isLoading = false
+      this.isLoading = false;
     } else {
       this.showError();
     }

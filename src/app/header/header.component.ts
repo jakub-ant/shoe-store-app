@@ -35,9 +35,7 @@ import {
     state('scaleDown', style({
       transform: 'scale(1)',
     })),
-    transition('scaleDown => scaleUp', [animate('0.75s')]),
-    transition('scaleUp => ScaleDown', [animate('0.75s')])
-
+    transition('scaleDown <=> scaleUp', [animate('.5s')]),
   ])]
 })
 export class HeaderComponent implements OnInit, OnDestroy {
