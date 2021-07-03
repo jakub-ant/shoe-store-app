@@ -41,31 +41,26 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
     errorOccured: false,
     errorMsg: 'Wystąpił błąd'
   }
-  private _shoppingCartSub!: Subscription;
-  private _deleteCartItemSub!: Subscription;
-  private _getCurrentCartSub!: Subscription;
-  private _userSub!: Subscription
+  private shoppingCartSub!: Subscription;
+  private deleteCartItemSub!: Subscription;
+  private getCurrentCartSub!: Subscription;
+  private userSub!: Subscription
   constructor(private readonly authService: AuthServiceService, private readonly apiService: APIService, private readonly router: Router) {}
   get totalValue(): number {
     if (this.shoppingCart && !this.isLoading) {
       const reducer = (accumulator: number, currentValue: number) => accumulator + currentValue;
       const prices: Array < number > = [];
       this.shoppingCart.shoppingCartItems.forEach(item => prices.push(item.price));
-      if (prices.length === 0) {
-        return 0;
-      } else {
-        let totalPrice: number = prices.reduce(reducer);
-        return totalPrice;
-      }
+      return (prices.length === 0) ? 0 : prices.reduce(reducer);
     } else {
       return 0;
     }
 
   }
   ngOnInit(): void {
-    this.isLoading = true
-    this.authService.loggedInUser.subscribe(user => this.user = user)
-    this._shoppingCartSub = this.authService.loggedInUsersShoppingCart.subscribe(
+    this.isLoading = true;
+    this.authService.loggedInUser.subscribe(user => this.user = user);
+    this.shoppingCartSub = this.authService.loggedInUsersShoppingCart.subscribe(
       items => {
         this.errorMsg.errorOccured = false
         this.shoppingCart = items;
@@ -77,28 +72,28 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
 
   deleteItem(cartId: string, userId: string) {
     this.isLoading = true;
-    if (this.user ?.idToken)
-      this._deleteCartItemSub = this.apiService.deleteCartItem(cartId, userId, this.user?.idToken)
-      .subscribe(() => {
-          if (this.user?.idToken)
-            this._getCurrentCartSub = this.apiService.getCurrentCart(userId, this.user?.idToken)
-            .subscribe(items => {
-                this.shoppingCart = items;
-                this.errorMsg.errorOccured = false;
-                this.isLoading = false;
-              },
-              err => this.errorMsg.errorOccured = true);
-        },
-        () => this.errorMsg.errorOccured = true)
+    if (this.user?.idToken) {
+      this.deleteCartItemSub = this.apiService.deleteCartItem(cartId, userId, this.user?.idToken)
+        .subscribe(() => {
+            if (this.user?.idToken) {
+              this.getCurrentCartSub = this.apiService.getCurrentCart(userId, this.user?.idToken)
+                .subscribe(items => {
+                    this.shoppingCart = items;
+                    this.errorMsg.errorOccured = false;
+                    this.isLoading = false;
+                  },
+                  err => this.errorMsg.errorOccured = true)
+            };
+          },
+          () => this.errorMsg.errorOccured = true)
+    }
   }
 
   onClickdeleteItem(event: any): void {
-    const cartId: string = event.target.dataset.cartId;
-    const userId: string = event.target.dataset.userId;
+    const cartId = event.target.dataset.cartId;
+    const userId = event.target.dataset.userId;
     this.deleteItem(cartId, userId);
   }
-
-
 
   addNewOrder() {
     if (this.shoppingCart) {
@@ -106,7 +101,7 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
         date: new Date()
       }
       const newOrder: Order = Object.assign(this.shoppingCart, currentDate)
-      if (this.user ?.idToken)
+      if (this.user?.idToken)
         this.apiService.addOrder(newOrder, this.user.idToken).subscribe(
           () => {
             if (this.shoppingCart) this.shoppingCart.shoppingCart.forEach(item => {
@@ -126,18 +121,21 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
     }
 
   }
+  unsubscribeActiveSubs(): void {
+    if (this.shoppingCartSub) {
+      this.shoppingCartSub.unsubscribe();
+    }
+    if (this.userSub) {
+      this.userSub.unsubscribe();
+    }
+    if (this.getCurrentCartSub) {
+      this.getCurrentCartSub.unsubscribe();
+    }
+    if (this.deleteCartItemSub) {
+      this.deleteCartItemSub.unsubscribe();
+    }
+  }
   ngOnDestroy(): void {
-    if (this._shoppingCartSub) {
-      this._shoppingCartSub.unsubscribe();
-    }
-    if (this._userSub) {
-      this._userSub.unsubscribe();
-    }
-    if (this._getCurrentCartSub) {
-      this._getCurrentCartSub.unsubscribe();
-    }
-    if (this._deleteCartItemSub) {
-      this._deleteCartItemSub.unsubscribe();
-    }
+    this.unsubscribeActiveSubs();
   }
 }

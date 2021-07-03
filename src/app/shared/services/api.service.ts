@@ -1,5 +1,6 @@
 import {
-  HttpClient
+  HttpClient,
+  HttpParams
 } from '@angular/common/http';
 import {
   Injectable
@@ -39,7 +40,13 @@ import {
 } from './auth-service.service';
 
 
-
+interface InterfaceItemIdProductId {
+  shoppingCartitemId: string;
+  productId: any;
+}
+interface addedItem {
+  name: string;
+}
 class ShoppingCartUserIDClass implements ShoppingCartUserID {
   userId: string;
   constructor(userIdInput: string) {
@@ -48,10 +55,7 @@ class ShoppingCartUserIDClass implements ShoppingCartUserID {
   shoppingCart: ShoppingCart[] = [];
   shoppingCartItems: ShoppingCartItem[] = [];
 }
-interface InterfaceItemIdProductId {
-  shoppingCartitemId: string;
-  productId: any;
-}
+
 class ItemIdProductId implements InterfaceItemIdProductId {
   shoppingCartitemId!: string;
   productId!: any;
@@ -61,7 +65,6 @@ class ItemIdProductId implements InterfaceItemIdProductId {
   }
 }
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -70,13 +73,14 @@ export class APIService {
   constructor(private readonly httpClient: HttpClient, private readonly authService: AuthServiceService) {}
 
   getItems(): Observable < OfferItem[] > {
-    return this.httpClient.get(`${environment.dbShoe}.json`)
+    return this.httpClient.get < OfferItem[] > (`${environment.dbShoe}.json`)
       .pipe(catchError(err => throwError(err)),
         map(items => APIService._mapReceivedProductObject(items)));
   }
+
   private static _mapReceivedProductObject(items: any): OfferItem[] {
     const receivedItems = items;
-    const itemsArray: OfferItem[] = []
+    const itemsArray: OfferItem[] = [];
     for (const key in receivedItems) {
       if (Object.prototype.hasOwnProperty.call(receivedItems, key)) {
         const element = receivedItems[key];
@@ -87,64 +91,73 @@ export class APIService {
     return itemsArray;
   }
 
-  getItemById(id: string) {
-    return this.httpClient.get(`${environment.dbShoe}/${id}.json`)
+  private static createParams(token: string, paramName: string): HttpParams {
+    if (paramName == "auth") {
+      return new HttpParams({
+        fromObject: {
+          "provider": "anonymous",
+          "auth": token
+        }
+      })
+    } else (paramName == "uid")
+      return new HttpParams({
+        fromObject: {
+          "provider": "anonymous",
+          "uid": token
+        }
+      })
+  }
+  
+  getItemById(id: string): Observable < ShoppingCartItem > {
+    return this.httpClient.get < ShoppingCartItem > (`${environment.dbShoe}/${id}.json`)
       .pipe(catchError(err => throwError(err)));
   }
 
-  addToCart(user: User) {
-    return this.httpClient.post(`${environment.dbShoppingCarts}.json`, {
+  addToCart(user: User): Observable < addedItem > {
+    return this.httpClient.post < addedItem > (`${environment.dbShoppingCarts}.json`, {
         userId: user.localId,
         userShoppingCart: user.shoppingCart
       }, {
-        params: {
-          "provider": "anonymous",
-          "auth": user.idToken
-        }
+        params: APIService.createParams(user.idToken, "auth")
       })
-      .pipe(catchError(err => throwError(err)))
+      .pipe(catchError(err => throwError(err)));
   }
 
-  addOrder(order: Order, userToken: string) {
-    return this.httpClient.post(`${environment.dbOrders}.json`, order, {
-        params: {
-          "provider": "anonymous",
-          "auth": userToken
-        }
+  addOrder(order: Order, userToken: string): Observable < addedItem > {
+    return this.httpClient.post < addedItem > (`${environment.dbOrders}.json`, order, {
+        params: APIService.createParams(userToken, "auth")
       })
-      .pipe(catchError(err => throwError(err)))
+      .pipe(catchError(err => throwError(err)));
   }
 
 
-  deleteCartItem(cartId: string, userId: string, userToken: string) {
+  deleteCartItem(cartId: string, userId: string, userToken: string): Observable < Object > {
     return this.httpClient.delete(`${environment.dbShoppingCarts}/${cartId}.json`, {
-      params: {
-        "provider": "anonymous",
-        "auth": userToken
-      }
+      params: APIService.createParams(userToken, "auth")
     })
   }
 
   getCurrentCart(userId: string, userToken: string): Observable < ShoppingCartUserIDClass | null > {
     return this.httpClient.get(`${environment.dbShoppingCarts}.json?orderBy="userId"&equalTo="${userId}"`, {
-        params: {
-          "provider": "anonymous",
-          "uid": userToken
-        }
+        params: APIService.createParams(userToken, "uid")
       })
       .pipe(catchError(err => throwError(err)),
         map(res => this._mapCurrentCart(res)),
-        tap(shoppingCart => this.authService.loggedInUsersShoppingCart.next(shoppingCart)))
+        tap(shoppingCart => this.authService.loggedInUsersShoppingCart.next(shoppingCart)));
   }
 
   private _mapCurrentCart(response: any): ShoppingCartUserIDClass | null {
     const res = response;
-    if (res) {
+    if (!res) {
+      return null;
+    } else {
       const shoppingCart = [];
       for (const [key, value] of Object.entries(res)) {
         shoppingCart.push(new ItemIdProductId(key, value))
       }
-      if (shoppingCart.length) {
+      if (!shoppingCart.length) {
+        return null;
+      } else {
         const shoppingCartUserID = new ShoppingCartUserIDClass(shoppingCart[0].productId.userId)
         shoppingCart.forEach((item: ItemIdProductId) => {
           return item.productId.userShoppingCart.forEach((res: string) => {
@@ -162,20 +175,13 @@ export class APIService {
             shoppingCartUserID.shoppingCartItems.push(product);
           }, err => throwError(err)))
         return shoppingCartUserID;
-      } else {
-        return null;
       }
-    } else {
-      return null;
     }
   }
 
   getOrders(userId: string, userToken: string): Observable < Order[] | null > {
     return this.httpClient.get(`${environment.dbOrders}.json?orderBy="userId"&equalTo="${userId}"`, {
-        params: {
-          "provider": "anonymous",
-          "uid": userToken
-        }
+        params: APIService.createParams(userToken, "uid")
       })
       .pipe(catchError(err => throwError(err)),
         map(orders => APIService._mapReceivedOrders(orders)))
@@ -191,11 +197,8 @@ export class APIService {
         mappedOrder.orderId = key;
         ordersArr.push(mappedOrder);
       }
-      if (ordersArr.length === 0) {
-        return null;
-      } else {
-        return ordersArr;
-      }
+
+      return (ordersArr.length === 0) ? null : ordersArr;
     }
   }
 
@@ -205,6 +208,7 @@ export class APIService {
     if (loggedInUserString) {
       const loggedInUser: User = JSON.parse(loggedInUserString);
       loggedInUser.validTill = new Date(String(loggedInUser.validTill));
+
       if (loggedInUser.validTill && (loggedInUser.validTill > currentDate)) {
         this.authService.loggedInUser.next(loggedInUser);
         this.getCurrentCart(loggedInUser.localId, loggedInUser.idToken).subscribe();

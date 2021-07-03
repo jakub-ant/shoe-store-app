@@ -71,9 +71,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .subscribe(user => {
           this.userError.errorOccured = false;
           this.loggedInUser = user;
-          if (!this.loggedInUser) {
-            this.scale = undefined;
-          }
+          this.loggedInUser ? null : this.scale = undefined;
         },
         () => {
           this.userError.errorOccured = true;
@@ -89,20 +87,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
           }
           this.shoppingCartError.errorOccured = false;
         },
-        err => this.shoppingCartError.errorOccured = true);
+        () => this.shoppingCartError.errorOccured = true);
   }
   logOut(): void {
     this.authService.logOut();
   }
-  private unsubscribe(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
-    if (this.loggedInUsersShoppingCartSub) {
-      this.loggedInUsersShoppingCartSub.unsubscribe();
-    }
+  private unsubscribeInitializedSubs(): void {
+    this.authSubscription ? this.authSubscription.unsubscribe() : null;
+    this.loggedInUsersShoppingCartSub ? this.loggedInUsersShoppingCartSub.unsubscribe() : null;
   }
   ngOnDestroy(): void {
-    this.unsubscribe();
+    this.unsubscribeInitializedSubs();
   }
 }

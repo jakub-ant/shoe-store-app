@@ -21,7 +21,7 @@ import {
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
-  styleUrls: ['./sign-up.component.scss']
+  styles: ['.container {max-width: 600px}']
 })
 export class SignUpComponent implements OnDestroy {
   isLoading = false;

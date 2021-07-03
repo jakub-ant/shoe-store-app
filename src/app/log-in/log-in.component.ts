@@ -3,6 +3,7 @@ import {
   OnDestroy,
 } from '@angular/core';
 import {
+  AbstractControl,
   FormControl,
   FormGroup,
   Validators
@@ -23,7 +24,7 @@ import {
 @Component({
   selector: 'app-log-in',
   templateUrl: './log-in.component.html',
-  styleUrls: ['./log-in.component.scss']
+  styles: ['.container {max-width: 600px}']
 })
 export class LogInComponent implements OnDestroy {
   isLoading: boolean = false;
@@ -33,22 +34,22 @@ export class LogInComponent implements OnDestroy {
     password: new FormControl('', [Validators.required, Validators.minLength(8)])
   })
   private loginSub!: Subscription;
-  get email() {
+  get email():AbstractControl|null {
     return this.logInForm.get('email');
   }
-  get password() {
+  get password():AbstractControl|null {
     return this.logInForm.get('password');
   }
-  get emailValue() {
+  get emailValue():string {
     return this.logInForm.get('email') ?.value;
   }
-  get passwordValue() {
+  get passwordValue():string {
     return this.logInForm.get('password') ?.value;
   }
 
   constructor(private readonly authServiceService: AuthServiceService, private readonly router: Router, private readonly apiService: APIService) {}
 
-  onSubmit() {
+  onSubmit():void {
     this.isLoading = true;
     this.loginSub = this.authServiceService.signIn(this.emailValue, this.passwordValue)
       .subscribe(user => {
@@ -63,9 +64,7 @@ export class LogInComponent implements OnDestroy {
           this.isLoading = false;
         })
   }
-  ngOnDestroy() {
-    if (this.loginSub) {
-      this.loginSub.unsubscribe();
-    }
+  ngOnDestroy():void {
+    this.loginSub ? this.loginSub.unsubscribe():null;
   }
 }

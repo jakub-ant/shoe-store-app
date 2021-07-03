@@ -34,35 +34,19 @@ export class OfferComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   errorMsg: ErrorMsg = {
     errorOccured: false,
-    errorMsg: 'Wystąpił błąd'
+    errorMsg: this.loggedInUser ? 
+    'Wystąpił błąd' : 
+    'Aby dodawać produkty do koszyka musisz się zalogować'
   }
+  loginAlert = false;
   private offerSubscription!: Subscription;
   private authSubscription!: Subscription;
 
-  constructor(private readonly _authService: AuthServiceService, private readonly _offerService: OfferService) {}
-
-  toggleError(event: boolean): void {
-    event ? this.showError() : this.hideError();
-  }
-  showError(): void {
-    this.errorMsg.errorOccured = true
-  }
-  hideError(): void {
-    this.errorMsg.errorOccured = false
-  }
-
-  renderOffers(items: OfferItem[] | null): void {
-    if (items) {
-      this.itemsArray = items;
-      this.isLoading = false
-    } else {
-      this.showError();
-    }
-  }
+  constructor(private readonly authService: AuthServiceService, private readonly offerService: OfferService) {}
 
   ngOnInit(): void {
     this.isLoading = true
-    this.authSubscription = this._authService.loggedInUser
+    this.authSubscription = this.authService.loggedInUser
       .subscribe(user => {
         this.hideError()
         if (user) {
@@ -72,11 +56,30 @@ export class OfferComponent implements OnInit, OnDestroy {
           }
         }
       }, () => this.showError())
-    this.offerSubscription = this._offerService.items
+    this.offerSubscription = this.offerService.items
       .subscribe(items => {
         this.hideError()
         this.renderOffers(items);
       }, () => this.showError())
+  }
+
+  toggleError(event: boolean): void {
+    event ? this.showError() : this.hideError();
+  }
+  showError(): void {
+    this.errorMsg.errorOccured = true;
+  }
+  hideError(): void {
+    this.errorMsg.errorOccured = false;
+  }
+
+  renderOffers(items: OfferItem[] | null): void {
+    if (items) {
+      this.itemsArray = items;
+      this.isLoading = false
+    } else {
+      this.showError();
+    }
   }
 
   ngOnDestroy(): void {

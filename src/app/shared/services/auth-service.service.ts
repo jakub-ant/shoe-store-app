@@ -3,7 +3,8 @@ import {
 } from '@angular/core';
 import {
   HttpClient,
-  HttpErrorResponse
+  HttpErrorResponse,
+  HttpParams
 } from '@angular/common/http';
 import {
   catchError,
@@ -35,7 +36,7 @@ export class AuthServiceService {
 
   constructor(private readonly httpClient: HttpClient) {}
 
-  static getUserExpirationDate(user: User): User {
+  private static getUserExpirationDate(user: User): User {
     const loggedInUser = user,
       currentDate = Date.now(),
       userExpiresIn = Number(loggedInUser.expiresIn),
@@ -44,20 +45,23 @@ export class AuthServiceService {
     return loggedInUser;
   }
 
+  private static createUserParams(email: string, password: string): HttpParams {
+    return new HttpParams({
+      fromObject: {
+        "email": email,
+        "password": password,
+        "returnSecureToken": "true"
+      }
+    })
+  }
+
   signUp(email: string, password: string): Observable < User > {
-    return this.httpClient.post < User > (environment.signUpLink, {
-      "email": email,
-      "password": password,
-      "returnSecureToken": true
-    }).pipe(catchError(this.handleError));
+    return this.httpClient.post < User > (environment.signUpLink, AuthServiceService.createUserParams(email, password))
+      .pipe(catchError(this.handleError));
   }
 
   signIn(email: string, password: string): Observable < User > {
-    return this.httpClient.post < User > (environment.logInLink, {
-        "email": email,
-        "password": password,
-        "returnSecureToken": true
-      })
+    return this.httpClient.post < User > (environment.logInLink, AuthServiceService.createUserParams(email, password))
       .pipe(catchError(this.handleError),
         map(user => AuthServiceService.getUserExpirationDate(user)),
         tap(user => {

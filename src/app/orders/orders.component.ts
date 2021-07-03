@@ -35,22 +35,19 @@ export class OrdersComponent implements OnInit, OnDestroy {
     errorMsg: 'Wystąpił błąd'
   }
   private loggedInUserSub!: Subscription;
-  constructor(private readonly _authService: AuthServiceService, private readonly apiService: APIService) {}
+  constructor(private readonly authService: AuthServiceService, private readonly apiService: APIService) {}
 
   ngOnInit(): void {
-    this.loggedInUserSub = this._authService.loggedInUser.subscribe(user => {
+    this.loggedInUserSub = this.authService.loggedInUser
+    .subscribe(user => {
         this.errorMsg.errorOccured = false;
         this.loggedInUser = user;
         if (this.loggedInUser) {
           this.apiService.getOrders(this.loggedInUser.localId, this.loggedInUser.idToken)
             .subscribe(
               orders => {
-                if (orders) {
-                  this.orders = orders;
-                  this.orders.sort((a, b) => (a.date < b.date) ? 1 : ((b.date < a.date) ? -1 : 0))
-                } else {
-                  this.orders = orders
-                }
+                this.orders = orders;
+                this.orders?this.orders.sort((a, b) => (a.date < b.date) ? 1 : ((b.date < a.date) ? -1 : 0)):null;
               },
               () => this.errorMsg.errorOccured = true
             )
@@ -58,9 +55,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
       },
       () => this.errorMsg.errorOccured = true);
   }
-  ngOnDestroy() {
-    if (this.loggedInUserSub) {
-      this.loggedInUserSub.unsubscribe();
-    }
+  ngOnDestroy():void {
+    this.loggedInUserSub ? this.loggedInUserSub.unsubscribe():null;
   }
 }

@@ -49,7 +49,7 @@ export class OfferItemComponent {
   @Input() item!: OfferItem;
   @Input() loggedInUser!: User | null;
   @Output() showErrorMsg = new EventEmitter < boolean > ();
-  showMessage = false
+  showMessage = false;
 
 
   constructor(private readonly apiService: APIService) {}
@@ -57,6 +57,7 @@ export class OfferItemComponent {
   addToCart(event: any) {
     const productId: string = event.target.dataset.id;
     if (!this.loggedInUser) {
+      this.showErrorMsg.emit(true);
       return;
     } else {
       this.loggedInUser.shoppingCart.length = 0;
