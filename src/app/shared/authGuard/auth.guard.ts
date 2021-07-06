@@ -23,17 +23,18 @@ import {
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  user!: User | null
+  user!: User | null;
   constructor(private readonly authService: AuthServiceService, private readonly router: Router) {}
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable < boolean > {
     return this.authService.loggedInUser
-      .pipe(map(user => {
+      .pipe(
+        map(user => {
         if (user) {
           return true;
         } else {
           this.router.navigate(['/offer']);
           return false;
         }
-      }), take(1))
+      }), take(1));
   }
 }

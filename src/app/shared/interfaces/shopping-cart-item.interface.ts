@@ -1,9 +1,8 @@
+import { Desc } from "./desc.interface";
+
 export interface ShoppingCartItem {
   cartItemId: string;
-  desc: {
-    gender: string,
-    size: number
-  }
+  desc: Desc;
   imageURL: string;
   name: string;
   price: number;

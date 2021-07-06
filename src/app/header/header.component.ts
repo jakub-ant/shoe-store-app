@@ -52,7 +52,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
   private authSubscription!: Subscription;
   private loggedInUsersShoppingCartSub!: Subscription;
-  private triggerAnimation() {
+  private triggerAnimation(): void {
     if (typeof this.scale == 'undefined') {
       //Blocks the animation if the component is initialized.
       this.scale = false;

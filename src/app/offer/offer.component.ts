@@ -31,14 +31,13 @@ import {
 export class OfferComponent implements OnInit, OnDestroy {
   itemsArray: OfferItem[] = [];
   loggedInUser!: User | null;
-  isLoading: boolean = false;
+  isLoading = false;
   errorMsg: ErrorMsg = {
     errorOccured: false,
     errorMsg: this.loggedInUser ? 
     'Wystąpił błąd' : 
     'Aby dodawać produkty do koszyka musisz się zalogować'
   }
-  loginAlert = false;
   private offerSubscription!: Subscription;
   private authSubscription!: Subscription;
 

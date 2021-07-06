@@ -27,7 +27,7 @@ import {
   styles: ['.container {max-width: 600px}']
 })
 export class LogInComponent implements OnDestroy {
-  isLoading: boolean = false;
+  isLoading = false;
   errMessage!: string | null;
   logInForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),

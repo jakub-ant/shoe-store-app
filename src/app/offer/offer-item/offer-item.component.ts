@@ -58,7 +58,6 @@ export class OfferItemComponent {
     const productId: string = event.target.dataset.id;
     if (!this.loggedInUser) {
       this.showErrorMsg.emit(true);
-      return;
     } else {
       this.loggedInUser.shoppingCart.length = 0;
       this.loggedInUser.shoppingCart.push(productId)
@@ -70,8 +69,7 @@ export class OfferItemComponent {
               () => {
                 this.showMessage = true;
                 setTimeout(() => this.showMessage = false, 2000);
-              }
-            );
+              });
           }
         },
         () => this.showErrorMsg.emit(true)
