@@ -6,7 +6,7 @@
       <p>Rozmiar: {{item.desc.size}}</p>
       <p>Płeć: {{item.desc.gender}}</p>
       <p>Cena {{item.price}} PLN</p>
-      <a class="btn btn-primary" [attr.data-id]="item.id" (click)="addToCart($event)">Dodaj do koszyka</a>
+      <button type="button" class="btn btn-primary" (click)="addToCart()">Dodaj do koszyka</button>
     </div>
     <div class="addedItem" [@showHideMessage]="showMessage ? 'show':'hide'">
       <p>Produkt został dodany do koszyka</p>

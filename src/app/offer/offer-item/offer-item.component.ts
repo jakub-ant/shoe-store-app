@@ -54,13 +54,13 @@ export class OfferItemComponent {
 
   constructor(private readonly apiService: APIService) {}
 
-  addToCart(event: any) {
-    const productId: string = event.target.dataset.id;
+  addToCart() {
+    const productId: string = this.item.id;
     if (!this.loggedInUser) {
       this.showErrorMsg.emit(true);
     } else {
       this.loggedInUser.shoppingCart.length = 0;
-      this.loggedInUser.shoppingCart.push(productId)
+      this.loggedInUser.shoppingCart.push(productId);
       this.apiService.addToCart(this.loggedInUser).subscribe(
         () => {
           this.showErrorMsg.emit(false);
@@ -73,7 +73,7 @@ export class OfferItemComponent {
           }
         },
         () => this.showErrorMsg.emit(true)
-      )
+      );
     }
   }
 }
